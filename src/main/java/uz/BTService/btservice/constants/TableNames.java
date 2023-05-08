@@ -1,5 +1,6 @@
 package uz.BTService.btservice.constants;
 
 public interface TableNames {
-    String DEPARTMENT_USER = "d_user";
+    String DEPARTMENT_USER = "bts_user";
+    String CATEGORY = "bts_category";
 }
