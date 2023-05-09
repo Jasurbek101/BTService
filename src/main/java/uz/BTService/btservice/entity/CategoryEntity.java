@@ -1,14 +1,9 @@
 package uz.BTService.btservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,7 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = TableNames.CATEGORY)
-public class Category extends BaseServerModifierEntity {
+public class CategoryEntity extends BaseServerModifierEntity {
+
+    @Column(unique = true,nullable = false)
     private String name;
-    private Double price;
+
 }

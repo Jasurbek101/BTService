@@ -40,8 +40,8 @@ public class AuthenticationService {
     public TokenResponseDto register(UserDto request) {
         String jwtToken = jwtService.generateToken(saveUser(request));
         return TokenResponseDto.builder()
-                .token(jwtToken)
-                .build();
+                        .token(jwtToken)
+                        .build();
     }
 
     public TokenResponseDto authenticate(LoginRequestDto request) {
@@ -61,7 +61,9 @@ public class AuthenticationService {
 
     public UserEntity saveUser(UserDto userDto) {
         Optional<UserEntity> byUsername = userRepository.findByUsername(userDto.getUsername());
+        System.out.println((byUsername.isPresent()));
         if (byUsername.isPresent()) {
+            System.out.println("error 1");
             throw new IllegalArgumentException();
         }
         UserEntity user = userDto.toEntity("password", "role", "birtDate");
