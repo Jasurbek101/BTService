@@ -1,29 +1,16 @@
 package uz.BTService.btservice.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import uz.BTService.btservice.common.util.SecurityUtils;
-import uz.BTService.btservice.dto.CategoryDto;
 import uz.BTService.btservice.dto.response.HttpResponse;
-import uz.BTService.btservice.entity.AttachmentContentEntity;
 import uz.BTService.btservice.entity.AttachmentEntity;
-import uz.BTService.btservice.entity.UserEntity;
-import uz.BTService.btservice.repository.AttachmentContentEntityRepository;
-import uz.BTService.btservice.repository.AttachmentEntityRepository;
-import uz.BTService.btservice.repository.UserRepository;
 import uz.BTService.btservice.service.AttachmentService;
-
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/v1/attachment")
@@ -31,9 +18,6 @@ import java.util.Optional;
 @Tag(name = "Attachment", description = "This Attachment C R")
 public class AttachmentEntityController {
 
-    private final AttachmentEntityRepository attachmentEntityRepository;
-    private final AttachmentContentEntityRepository attachmentContentEntityRepository;
-    private final UserRepository userRepository;
     private final AttachmentService attachmentService;
 
     @PreAuthorize("hasRole('ADMIN')")

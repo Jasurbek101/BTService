@@ -10,20 +10,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.BTService.btservice.common.util.DateUtil;
-import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.config.token.JwtService;
 import uz.BTService.btservice.dto.LoginRequestDto;
 import uz.BTService.btservice.dto.TokenResponseDto;
 import uz.BTService.btservice.dto.UserDto;
 import uz.BTService.btservice.entity.UserEntity;
-import uz.BTService.btservice.entity.role.PermissionEnum;
 import uz.BTService.btservice.entity.role.RoleEnum;
-import uz.BTService.btservice.entity.role.RolePermissionEntity;
 import uz.BTService.btservice.repository.UserRepository;
 
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service

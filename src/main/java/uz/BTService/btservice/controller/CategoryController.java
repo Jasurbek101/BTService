@@ -3,12 +3,9 @@ package uz.BTService.btservice.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.dto.CategoryDto;
 import uz.BTService.btservice.dto.response.HttpResponse;
-import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.repository.UserRepository;
 import uz.BTService.btservice.service.CategoryService;
 
@@ -24,7 +21,6 @@ public class CategoryController {
     @PostMapping("/add")
     public HttpResponse<Object> addCategory(@RequestBody CategoryDto categoryDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
-
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.addCategory(categoryDto))
                     .message("successfully!!!");
@@ -45,7 +41,6 @@ public class CategoryController {
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message(id + " not found!!!");
         }
-
         return response;
     }
 
@@ -59,7 +54,6 @@ public class CategoryController {
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Category not found!!!");
         }
-
         return response;
     }
 
@@ -73,7 +67,6 @@ public class CategoryController {
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Category not found!!!");
         }
-
         return response;
     }
 
@@ -81,30 +74,25 @@ public class CategoryController {
     @PostMapping("/update")
     public HttpResponse<Object> update(@RequestBody CategoryDto categoryDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
-
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.updateCategory(categoryDto))
                     .message("successfully!!!");
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(categoryDto.getName() + " error");
         }
-
         return response;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public HttpResponse<Object> deleteCategory(@PathVariable Long id) {
-
         HttpResponse<Object> response = HttpResponse.build(false);
-
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.delete(id))
                     .message("successfully!!!");
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
         }
-
         return response;
     }
 }

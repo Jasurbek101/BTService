@@ -17,7 +17,6 @@ import uz.BTService.btservice.repository.AttachmentEntityRepository;
 import uz.BTService.btservice.repository.UserRepository;
 
 import java.io.IOException;
-import java.lang.module.FindException;
 import java.util.Iterator;
 import java.util.Optional;
 
