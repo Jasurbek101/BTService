@@ -17,9 +17,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(value = "SELECT * FROM bts_user du WHERE du.username = :username AND status <> 'DELETED'", nativeQuery = true)
     Optional<UserEntity> findByUsername(@Param("username") String username);
 
-//    Optional<UserEntity> findByUsername(String username);
+    @Query(value = "SELECT * FROM bts_user du WHERE du.username = :username OR du.phone_number = :phoneNumber", nativeQuery = true)
+    Optional<UserEntity> findByUsernameOriginalDB(@Param("username") String username,@Param("phoneNumber") String phoneNumber);
 
-    @Query(value = "SELECT * FROM bts_user WHERE status <> 'DELETED'", nativeQuery = true)
+
+    @Query(value = "SELECT * FROM bts_user WHERE status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
     List<UserEntity> getAllUser();
 
 
@@ -33,23 +35,28 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 //                    "    WHERE dr1.parent_id IS NOT NULL\n" +
 //                    ")\n" +
 //                    "SELECT du.*,\n" +
-//                    "       r.parent_ id as parent_region_id,\n" +
+//                    "       r.parent_id as parent_region_id,\n" +
 //                    "       r.name as region_name,\n" +
 //                    "       r.parent_name as parent_region_name\n" +
 //                    "FROM bts_user du\n" +
 //                    "LEFT JOIN regions r ON du.region_id = ANY(ARRAY[r.id, r.parent_id])\n" +
 //                    "where du.status <> 'DELETED';", nativeQuery = true)
 //    List<UserInterface> getAllUserInterface();
-// alt j
-    @Query(value = "SELECT * FROM bts_user WHERE status <> 'DELETED'", nativeQuery = true)
+
+    @Query(value = "SELECT * FROM bts_user WHERE status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
     List<UserInterface> getAllUserInterface();
 
-    @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETE'", nativeQuery = true)
+    @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
     UserEntity getUserInformation(@Param("userInformationId") Long id);
 
     @Modifying
-    @Query(value = "UPDATE bts_user SET status = 'DELETED' WHERE id = :userId", nativeQuery = true)
+    @Query(value = "UPDATE bts_user SET status = 'DELETED' WHERE id = :userId AND status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
     Integer userDelete(@Param("userId") Long userId);
 
 
+    @Query(value = "SELECT * FROM bts_user WHERE role_enum = 'ADMIN' AND status <> 'DELETED'", nativeQuery = true)
+    List<UserEntity> getAllAdmin();
+
+    @Query(value = "SELECT * FROM bts_user WHERE id = :adminId AND role_enum = 'ADMIN' AND status <> 'DELETED'", nativeQuery = true)
+    UserEntity getAdminById(@Param("adminId") Long adminId);
 }

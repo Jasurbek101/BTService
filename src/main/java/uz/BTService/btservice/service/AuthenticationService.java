@@ -10,16 +10,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.BTService.btservice.common.util.DateUtil;
+import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.config.token.JwtService;
 import uz.BTService.btservice.dto.LoginRequestDto;
 import uz.BTService.btservice.dto.TokenResponseDto;
 import uz.BTService.btservice.dto.UserDto;
 import uz.BTService.btservice.entity.UserEntity;
+import uz.BTService.btservice.entity.role.PermissionEnum;
 import uz.BTService.btservice.entity.role.RoleEnum;
+import uz.BTService.btservice.entity.role.RolePermissionEntity;
 import uz.BTService.btservice.repository.UserRepository;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -36,8 +41,8 @@ public class AuthenticationService {
     public TokenResponseDto register(UserDto request) {
         String jwtToken = jwtService.generateToken(saveUser(request));
         return TokenResponseDto.builder()
-                        .token(jwtToken)
-                        .build();
+                .token(jwtToken)
+                .build();
     }
 
     public TokenResponseDto authenticate(LoginRequestDto request) {
@@ -56,23 +61,31 @@ public class AuthenticationService {
     }
 
     public UserEntity saveUser(UserDto userDto) {
-        Optional<UserEntity> byUsername = userRepository.findByUsername(userDto.getUsername());
-        System.out.println((byUsername.isPresent()));
+        Optional<UserEntity> byUsername = userRepository.findByUsernameOriginalDB(userDto.getUsername(),userDto.getPhoneNumber());
         if (byUsername.isPresent()) {
-            System.out.println("error 1");
-            throw new IllegalArgumentException();
+            String username = byUsername.get().getUsername();
+            String phoneNumber = byUsername.get().getPhoneNumber();
+
+            if (userDto.getUsername().equals(username))
+                throw new RuntimeException(username + " there is a user with this username");
+            else if (userDto.getPhoneNumber().equals(phoneNumber)) {
+                throw new RuntimeException(phoneNumber + " there is a user with this username");
+            }
+
         }
         UserEntity user = userDto.toEntity("password", "role", "birtDate");
         try {
-//            user.forCreate(userRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(()-> new UsernameNotFoundException(" user name not found!")).getId());
-            user.forCreate();
+
+            if (SecurityUtils.getUsername()!=null) {
+                var userEntity = userRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(() -> new UsernameNotFoundException(" user name not found!"));
+               if(userEntity.getRoleEnum().equals(RoleEnum.SUPER_ADMIN)){
+                   user.forCreate(userEntity.getId());
+               }
+            } else user.forCreate();
+
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             user.setBirtDate(DateUtils.parseDate(userDto.getBirtDate(), DateUtil.PATTERN14));
             user.setRoleEnum(userDto.getRoleEnum() == RoleEnum.ADMIN ? RoleEnum.ADMIN : RoleEnum.USER);
-//            RolePermissionEntity rolePermission = new RolePermissionEntity();
-//            rolePermission.setRoleEnum(List.of(RoleEnum.USER.name()));
-//            rolePermission.setPermissionEnum(List.of(PermissionEnum.READ.name()));
-//            user.setRolePermissionEntities(rolePermission);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
