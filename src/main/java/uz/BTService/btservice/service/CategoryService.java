@@ -25,12 +25,9 @@ public class CategoryService {
     public CategoryEntity addCategory(CategoryDto categoryDto) {
         UserEntity userEntity = userRepository.findByUsername(SecurityUtils.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User no active"));
-
         CategoryEntity entity = categoryDto.toEntity();
         entity.forCreate(userEntity.getId());
-
         return categoryRepository.save(entity);
-
     }
 
     public CategoryEntity getCategory(Long id) {
