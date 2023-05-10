@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -28,6 +29,7 @@ public class UserEntity extends BaseServerModifierEntity implements UserDetails 
   private String lastname;
   private String middleName;
   private Date birtDate;
+  @Column(unique = true,nullable = false)
   private String phoneNumber;
   @Column(unique = true,nullable = false)
   private String username;
@@ -38,7 +40,7 @@ public class UserEntity extends BaseServerModifierEntity implements UserDetails 
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Arrays.asList(new SimpleGrantedAuthority(roleEnum.name()));
+    return List.of(new SimpleGrantedAuthority(roleEnum.name()));
   }
 
   @Override
