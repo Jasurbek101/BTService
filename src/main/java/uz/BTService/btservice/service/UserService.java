@@ -32,7 +32,7 @@ public class UserService {
         List<UserInterface> listUserInterfaces = userRepository.getAllUserInterface();
         log.atInfo().log("!Получение... Все пользователи");
 
-        for(UserInterface uInterface : listUserInterfaces){
+        for (UserInterface uInterface : listUserInterfaces) {
             UserDto dto = new UserDto();
             dto.setId(uInterface.getId());
             dto.setFirstname(uInterface.getFirstname());
@@ -47,7 +47,6 @@ public class UserService {
         }
         return userResponseDto;
     }
-
 
 
     public UserDto getUserInformation(Long id) {
@@ -89,7 +88,7 @@ public class UserService {
                 throw new RuntimeException(e);
             }
         }
-        // rasmi qoldi
+
         userRepository.save(user);
         return true;
     }
@@ -98,5 +97,20 @@ public class UserService {
     public Boolean userDelete(Long id) {
         Integer userDeleteIsSuccess = userRepository.userDelete(id);
         return userDeleteIsSuccess > 0;
+    }
+
+    public List<UserDto> getAdminAll() {
+        List<UserDto> userResponseDto = new ArrayList<>();
+        List<UserEntity> listAdmin = userRepository.getAllAdmin();
+        for (UserEntity admin : listAdmin) {
+            UserDto addAdmin = admin.toDto("password", "birtDate");
+            addAdmin.setBirtDate(String.valueOf(admin.getBirtDate()));
+            userResponseDto.add(addAdmin);
+        }
+        return userResponseDto;
+    }
+
+    public UserDto getAdminInformation(Long id) {
+        return userRepository.getAdminById(id).toDto();
     }
 }
