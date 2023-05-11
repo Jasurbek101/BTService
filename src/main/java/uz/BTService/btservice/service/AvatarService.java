@@ -64,8 +64,6 @@ public class AvatarService {
         return integer > 0;
     }
 
-
-
     public Avatar updateAvatar(Long id, MultipartHttpServletRequest request) throws IOException {
         UserEntity userEntity = userRepository.findByUsername(SecurityUtils.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User no active"));

@@ -13,7 +13,7 @@ import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.repository.ProductRepository;
 import uz.BTService.btservice.repository.UserRepository;
 
-import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +43,24 @@ public class ProductService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ProductEntity getProduct(Long id) {
+        return productRepository.findByProductId(id).orElseThrow(()->new RuntimeException(id + " not found!!!"));
+    }
+
+    public List<ProductEntity> getAllProduct() {
+        try {
+            List<ProductEntity> byAllProduct = productRepository.findByAllProduct();
+            return byAllProduct;
+        }catch (Exception e){
+            return (List<ProductEntity>) new RuntimeException();
+        }
+    }
+
+    public ProductEntity updateProduct(ProductDto productDto) {
+
+
+        return null;
     }
 }
