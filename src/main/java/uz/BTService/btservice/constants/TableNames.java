@@ -7,4 +7,5 @@ public interface TableNames {
     String PRODUCT = "bts_product";
     String ATTACHMENT_ENTITY = "bts_attachment";
     String ATTACHMENT_CONTENT_ENTITY = "bts_attachment_content";
+    String AVATAR = "bts_avatar";
 }

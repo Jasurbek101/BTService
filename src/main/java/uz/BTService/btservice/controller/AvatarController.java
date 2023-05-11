@@ -8,38 +8,42 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.BTService.btservice.dto.response.HttpResponse;
 import uz.BTService.btservice.entity.AttachmentEntity;
-import uz.BTService.btservice.service.AttachmentService;
+import uz.BTService.btservice.entity.Avatar;
+import uz.BTService.btservice.service.AvatarService;
+
 import java.io.IOException;
 
-
 @RestController
-@RequestMapping("/api/v1/attachment")
+@RequestMapping("/api/v1/avatar")
 @RequiredArgsConstructor
-@Tag(name = "Attachment", description = "This Attachment C R")
-public class AttachmentEntityController {
+@Tag(name = "Avatar", description = "This Avatar CRUD")
+public class AvatarController {
 
-    private final AttachmentService attachmentService;
-
+    private final AvatarService avatarService;
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/uploadFile")
     public HttpResponse<Object> uploadFileToDB(MultipartHttpServletRequest request) throws IOException {
         HttpResponse<Object> response = HttpResponse.build(false);
         try{
-             response.code(HttpResponse.Status.OK).success(true).body(attachmentService.uploadAttachment(request)).message("successfully!!!");
+            response.code(HttpResponse.Status.OK).success(true).body(avatarService.uploadAvatar(request)).message("successfully!!!");
         }catch (Exception e){
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }
 
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getFileDB/{id}")
     public HttpResponse<Object> getFile(@PathVariable Long id, HttpServletResponse response) throws IOException {
         HttpResponse<Object> responses = HttpResponse.build(false);
         try{
-                AttachmentEntity attachment= attachmentService.getAttachment(id,response);
-                responses.code(HttpResponse.Status.OK).success(true).body(attachment)
-                        .message("successfully!!!");
+            Avatar avatar= avatarService.getAvatar(id,response);
+            if (avatar==null){
+                throw new Exception("avatar not found");
+            }
+            responses.code(HttpResponse.Status.OK).success(true).body(avatar)
+                    .message("successfully!!!");
         }catch (Exception e){
             responses.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message(e.getMessage());
         }
@@ -48,24 +52,22 @@ public class AttachmentEntityController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public HttpResponse<Object> updateFileToDB(MultipartHttpServletRequest request, @PathVariable Long id) throws IOException {
+    public HttpResponse<Object> updateAvatar(MultipartHttpServletRequest request, @PathVariable Long id) throws IOException {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(attachmentService.updateAttachment(id,request))
+            response.code(HttpResponse.Status.OK).success(true).body(avatarService.updateAvatar(id,request))
                     .message("successfully!!!");
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(" error");
         }
         return response;
     }
-
-
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public HttpResponse<Object> deleteAttachment(@PathVariable Long id) {
+    public HttpResponse<Object> deleteAvatar(@PathVariable Long id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(attachmentService.delete(id))
+            response.code(HttpResponse.Status.OK).success(true).body(avatarService.delete(id))
                     .message("successfully!!!");
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");

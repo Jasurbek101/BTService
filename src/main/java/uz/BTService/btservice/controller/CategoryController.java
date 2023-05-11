@@ -16,7 +16,7 @@ import uz.BTService.btservice.service.CategoryService;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final UserRepository userRepository;
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public HttpResponse<Object> addCategory(@RequestBody CategoryDto categoryDto) {
@@ -34,7 +34,6 @@ public class CategoryController {
     @GetMapping("get/{id}")
     public HttpResponse<Object> getCategoryId(@PathVariable Long id) {
         HttpResponse<Object> response = HttpResponse.build(false);
-
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.getCategory(id))
                     .message("successfully!!!");
