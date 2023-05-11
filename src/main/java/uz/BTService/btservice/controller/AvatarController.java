@@ -20,7 +20,7 @@ import java.io.IOException;
 public class AvatarController {
 
     private final AvatarService avatarService;
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/uploadFile")
     public HttpResponse<Object> uploadFileToDB(MultipartHttpServletRequest request) throws IOException {
         HttpResponse<Object> response = HttpResponse.build(false);
@@ -33,7 +33,7 @@ public class AvatarController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getFileDB/{id}")
     public HttpResponse<Object> getFile(@PathVariable Long id, HttpServletResponse response) throws IOException {
         HttpResponse<Object> responses = HttpResponse.build(false);
@@ -62,6 +62,7 @@ public class AvatarController {
         }
         return response;
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public HttpResponse<Object> deleteAvatar(@PathVariable Long id) {
