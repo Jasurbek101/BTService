@@ -17,10 +17,15 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.status <> 'DELETED'", nativeQuery = true)
     List<CategoryEntity> findAll();
 
-    @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.status <> 'DELETED' fetch first 2 row only",nativeQuery = true)
-    List<CategoryEntity> findAllById(@Param("id")Long id);
+    @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.status <> 'DELETED' fetch first :length row only",nativeQuery = true)
+    List<CategoryEntity> findAllById(@Param("length")Long length);
 
     @Modifying
     @Query(value = "UPDATE bts_category SET status = 'DELETED' WHERE id = :categoryId", nativeQuery = true)
     Integer categoryDelete(@Param("categoryId") Long categoryId);
+
+    @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.name=:categoryName",nativeQuery = true)
+    Optional<CategoryEntity> findByCreatedByName(@Param("categoryName")String categoryName);
+
+//Ctrl name
 }
