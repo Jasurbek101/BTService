@@ -28,6 +28,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public HttpResponse<Object> register(@RequestBody UserDto userDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
+        System.out.println("hallo");
         try {
             userDto.setRoleEnum(RoleEnum.USER);
             response.code(HttpResponse.Status.OK).success(true).body(service.register(userDto)).message("successfully!!!");
