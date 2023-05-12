@@ -16,8 +16,9 @@ import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 public class Avatar extends BaseServerModifierEntity {
 
     private String fileOriginalName; //uz.jpa
-    private long size; // 204800
-    private String contentType; // application.json
+    private Long size; // 204800
+    private String contentType; // application.json, image/png
     private byte[] mainContent; //Asosiy mag'zi (Content)
+    private String name; // PAPKANI ICHIDAN TOPISH UCHUN //BU FILENI SYSTEMAGA SAQLAGANDA KERAK BULADI
 
 }

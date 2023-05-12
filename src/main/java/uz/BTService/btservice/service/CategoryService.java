@@ -26,23 +26,33 @@ public class CategoryService {
     public CategoryEntity addCategory(CategoryDto categoryDto) {
         UserEntity userEntity = userRepository.findByUsername(SecurityUtils.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User no active"));
+
+        Optional<CategoryEntity> byCreatedByName = categoryRepository.findByCreatedByName(categoryDto.getName());
+        if (byCreatedByName.isPresent()) { // bor true
+            CategoryEntity categoryEntity = byCreatedByName.get();
+            if (categoryEntity.getStatus().equals(EntityStatus.DELETED)) {
+                categoryEntity.forCreate(userEntity.getId());
+                categoryEntity.setStatus(EntityStatus.CREATED);
+                return categoryRepository.save(categoryEntity);
+            }
+        }
         CategoryEntity entity = categoryDto.toEntity();
         entity.forCreate(userEntity.getId());
         return categoryRepository.save(entity);
     }
 
-    public CategoryEntity getCategory(Long id) {
+    public CategoryEntity getCategoryId(Long id) {
         return categoryRepository.findByCategoryId(id).orElseThrow(() -> new RuntimeException(id + " not found!!!"));
     }
 
     public List<CategoryEntity> getAllCategory() {
         List<CategoryEntity> allBy = categoryRepository.findAll();
-        return  allBy;
+        return allBy;
     }
 
-    public List<CategoryEntity> getAllIdCategory(Long id){
-     List<CategoryEntity> allCategoryId = categoryRepository.findAllById(id);
-     return allCategoryId;
+    public List<CategoryEntity> getAllIdCategory(Long id) {
+        List<CategoryEntity> allCategoryId = categoryRepository.findAllById(id);
+        return allCategoryId;
     }
 
     @Transactional
@@ -51,12 +61,12 @@ public class CategoryService {
     }
 
     public CategoryEntity updateCategory(CategoryDto categoryDto) {
-        if(!categoryDto.getName().isEmpty()){
+        if (!categoryDto.getName().isEmpty()) {
             UserEntity userEntity = userRepository.findByUsername(SecurityUtils.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("User no active"));
 
             CategoryEntity entity = categoryRepository.findByCategoryId(categoryDto.getId()).orElseThrow(
-                    ()-> new RuntimeException(categoryDto.getId() + " id not found!!!"));
+                    () -> new RuntimeException(categoryDto.getId() + " id not found!!!"));
 
             entity.setName(categoryDto.getName());
             entity.forUpdate(userEntity.getId());

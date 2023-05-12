@@ -34,7 +34,7 @@ public class ProductService {
             Avatar avatar = avatarService.getAvatar(productDto.getAttachmentId(), responses);
             System.out.println(avatar.getFileOriginalName()+"//////////////////////////////////////////////////////////////");
             productEntity.setAvatar(avatar);
-            CategoryEntity category = categoryService.getCategory(productDto.getCategoryEntityId());
+            CategoryEntity category = categoryService.getCategoryId(productDto.getCategoryEntityId());
             System.out.println(category+"????????????????????????????????????????????");
             productEntity.setCategoryEntity(category);
             productEntity.forCreate(userEntity.getId());
