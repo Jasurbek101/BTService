@@ -24,6 +24,7 @@ import uz.BTService.btservice.repository.UserRepository;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -60,21 +61,31 @@ public class AuthenticationService {
     }
 
     public UserEntity saveUser(UserDto userDto) {
-        Optional<UserEntity> byUsername = userRepository.findByUsername(userDto.getUsername());
+        Optional<UserEntity> byUsername = userRepository.findByUsernameOriginalDB(userDto.getUsername(),userDto.getPhoneNumber());
         if (byUsername.isPresent()) {
-            throw new IllegalArgumentException();
+            String username = byUsername.get().getUsername();
+            String phoneNumber = byUsername.get().getPhoneNumber();
+
+            if (userDto.getUsername().equals(username))
+                throw new RuntimeException(username + " there is a user with this username");
+            else if (userDto.getPhoneNumber().equals(phoneNumber)) {
+                throw new RuntimeException(phoneNumber + " there is a user with this username");
+            }
+
         }
         UserEntity user = userDto.toEntity("password", "role", "birtDate");
         try {
-//            user.forCreate(userRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(()-> new UsernameNotFoundException(" user name not found!")).getId());
-            user.forCreate();
+
+            if (SecurityUtils.getUsername()!=null) {
+                var userEntity = userRepository.findByUsername(SecurityUtils.getUsername()).orElseThrow(() -> new UsernameNotFoundException(" user name not found!"));
+               if(userEntity.getRoleEnum().equals(RoleEnum.SUPER_ADMIN)){
+                   user.forCreate(userEntity.getId());
+               }
+            } else user.forCreate();
+
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             user.setBirtDate(DateUtils.parseDate(userDto.getBirtDate(), DateUtil.PATTERN14));
             user.setRoleEnum(userDto.getRoleEnum() == RoleEnum.ADMIN ? RoleEnum.ADMIN : RoleEnum.USER);
-//            RolePermissionEntity rolePermission = new RolePermissionEntity();
-//            rolePermission.setRoleEnum(List.of(RoleEnum.USER.name()));
-//            rolePermission.setPermissionEnum(List.of(PermissionEnum.READ.name()));
-//            user.setRolePermissionEntities(rolePermission);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
