@@ -1,5 +1,6 @@
 package uz.BTService.btservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +18,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @Operation(summary = "This method for post", description = "This method Category add")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public HttpResponse<Object> addCategory(@RequestBody CategoryDto categoryDto) {
@@ -30,19 +32,21 @@ public class CategoryController {
         return response;
     }
 
+    @Operation(summary = "This method for getId", description = "This method Category getId")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("get/{id}")
     public HttpResponse<Object> getCategoryId(@PathVariable Long id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(categoryService.getCategory(id))
+            response.code(HttpResponse.Status.OK).success(true).body(categoryService.getCategoryId(id))
                     .message("successfully!!!");
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message(id + " not found!!!");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
         }
         return response;
     }
 
+    @Operation(summary = "This method for getAll", description = "This method user getAll")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("getAll")
     public HttpResponse<Object> getAllCategory(){
@@ -56,6 +60,7 @@ public class CategoryController {
         return response;
     }
 
+    @Operation(summary = "This method for getAllId", description = "This method user getAllId")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("getAllId/{id}")
     public HttpResponse<Object> getAllCategory(@PathVariable Long id){
@@ -69,6 +74,7 @@ public class CategoryController {
         return response;
     }
 
+    @Operation(summary = "This method for Put", description = "This method user update")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update")
     public HttpResponse<Object> update(@RequestBody CategoryDto categoryDto) {

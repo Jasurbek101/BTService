@@ -2,6 +2,7 @@ package uz.BTService.btservice.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,36 +15,49 @@ import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.repository.AvatarRepository;
 import uz.BTService.btservice.repository.UserRepository;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AvatarService {
     private final UserRepository userRepository;
     private final AvatarRepository avatarRepository;
+    private static final String uploadDirectory="downloads_file";
     public Avatar uploadAvatar(MultipartHttpServletRequest request) throws IOException {
         UserEntity userEntity = userRepository.findByUsername(SecurityUtils.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User no active"));
-        Iterator<String> fileNames = request.getFileNames();
-        MultipartFile file = request.getFile(fileNames.next());
-        if (file!=null && file.getSize()!=0) {
-            String originalFilename = file.getOriginalFilename();
-            long size = file.getSize();
-            String contentType = file.getContentType();
-            Avatar attachment = new Avatar();
-            attachment.setFileOriginalName(originalFilename);
-            attachment.setSize(size);
-            attachment.setContentType(contentType);
-            attachment.forCreate(userEntity.getId());
-            attachment.setMainContent(file.getBytes());
-            attachment.forCreate(userEntity.getId());
-            avatarRepository.save(attachment);
-            return attachment;
+        try {
+
+            Iterator<String> fileNames = request.getFileNames();
+            MultipartFile file = request.getFile(fileNames.next());
+            if (file != null && file.getSize()!=0){
+                String originalFilename = file.getOriginalFilename();
+                Avatar attachment = new Avatar();
+                attachment.setFileOriginalName(originalFilename);
+                attachment.setSize(file.getSize());
+                attachment.setContentType(file.getContentType());
+                // Uyga.borish
+                String[] split = originalFilename.split("\\.");
+                String name = UUID.randomUUID() + "." + split[split.length - 1];
+                attachment.setName(name);
+                avatarRepository.save(attachment);
+                Path path = Paths.get(uploadDirectory+"/"+name);
+                Files.copy(file.getInputStream(),path);
+
+            }
+        }catch (IOException e){
+            throw new FileUploadException("file not found");
         }
         return null;
     }
+
 
     public Avatar getAvatar(Long id, HttpServletResponse response) throws IOException {
         Optional<Avatar> optionalAttachment = avatarRepository.findById(id);

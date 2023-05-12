@@ -1,5 +1,6 @@
 package uz.BTService.btservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -7,8 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.BTService.btservice.dto.response.HttpResponse;
-import uz.BTService.btservice.entity.AttachmentEntity;
 import uz.BTService.btservice.entity.Avatar;
+import uz.BTService.btservice.exceptions.FileUploadException;
 import uz.BTService.btservice.service.AvatarService;
 
 import java.io.IOException;
@@ -20,12 +21,17 @@ import java.io.IOException;
 public class AvatarController {
 
     private final AvatarService avatarService;
-//    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "This method for post", description = "This method Avatar add")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/uploadFile")
     public HttpResponse<Object> uploadFileToDB(MultipartHttpServletRequest request) throws IOException {
         HttpResponse<Object> response = HttpResponse.build(false);
         try{
-            response.code(HttpResponse.Status.OK).success(true).body(avatarService.uploadAvatar(request)).message("successfully!!!");
+            Avatar avatar = avatarService.uploadAvatar(request);
+            if (avatar==null){
+                throw new FileUploadException("FileUploadException");
+            }
+            response.code(HttpResponse.Status.OK).success(true).body(avatar).message("successfully!!!");
         }catch (Exception e){
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
