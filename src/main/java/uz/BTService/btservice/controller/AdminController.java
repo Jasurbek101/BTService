@@ -6,7 +6,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.dto.TokenResponseDto;
 import uz.BTService.btservice.dto.UserDto;
 import uz.BTService.btservice.dto.response.HttpResponse;
@@ -33,11 +36,11 @@ public class AdminController {
     public HttpResponse<Object> getAdminList() {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            List<UserDto> userList = userService.getUserAll();
-            if (userList == null || userList.isEmpty())
+            List<UserDto> adminList = userService.getAdminAll();
+            if (adminList == null || adminList.isEmpty())
                 response.code(HttpResponse.Status.NOT_FOUND).message("Not found any user!!!");
             else
-                response.code(HttpResponse.Status.OK).success(true).body(userService.getAdminAll()).message("successfully!!!");
+                response.code(HttpResponse.Status.OK).success(true).body(adminList).message("successfully!!!");
         } catch (Exception e) {
             e.printStackTrace();
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR);

@@ -15,7 +15,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     Optional<CategoryEntity> findByCategoryId(@Param("categoryId") Long categoryId);
 
     @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.status <> 'DELETED'", nativeQuery = true)
-    List<CategoryEntity> findAll();
+    List<CategoryEntity> findAllCategory();
 
     @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.status <> 'DELETED' fetch first :length row only",nativeQuery = true)
     List<CategoryEntity> findAllById(@Param("length")Long length);
