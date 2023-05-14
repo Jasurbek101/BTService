@@ -31,9 +31,9 @@ public class ProductService {
             productEntity.setName(productDto.getName());
             productEntity.setPrice(productDto.price);
             productEntity.setDescription(productDto.getDescription());
-            Avatar avatar = avatarService.getAvatar(productDto.getAttachmentId(), responses);
-            System.out.println(avatar.getFileOriginalName()+"//////////////////////////////////////////////////////////////");
-            productEntity.setAvatar(avatar);
+//            Avatar avatar = avatarService.getAvatar(productDto.getAttachmentId(), responses);
+//            System.out.println(avatar.getFileOriginalName()+"//////////////////////////////////////////////////////////////");
+//            productEntity.setAvatar(avatar);
             CategoryEntity category = categoryService.getCategoryId(productDto.getCategoryEntityId());
             System.out.println(category+"????????????????????????????????????????????");
             productEntity.setCategoryEntity(category);

@@ -20,6 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public CategoryEntity addCategory(CategoryDto categoryDto) {
+
         Long userId = SecurityUtils.getUserId();
 
         Optional<CategoryEntity> byCreatedByName = categoryRepository.findByCreatedByName(categoryDto.getName());
