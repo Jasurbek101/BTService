@@ -76,16 +76,16 @@ public class ProductService {
         return productEntity;
     }
 
-    public List<ProductEntity> getAllProduct() {
-            List<ProductEntity> Prodact_List = productRepository.findByAllProduct();
-        for (ProductEntity productEntity : Prodact_List) {
-            Avatar avatar = avatarRepository.findByNotOptionalId(productEntity.getAvatar().getId());
-            CategoryEntity category = categoryRepository.findByCategoryNotOptionalId(productEntity.getCategoryEntity().getId());
-            productEntity.setCategoryEntity(category);
-            productEntity.setAvatar(avatar);
-        }
-            return Prodact_List;
-    }
+//    public List<ProductEntity> getAllProduct() {
+//            List<ProductEntity> Prodact_List = productRepository.findByAllProduct();
+//        for (ProductEntity productEntity : Prodact_List) {
+//            Avatar avatar = avatarRepository.findByNotOptionalId(productEntity.getAvatar().getId());
+//            CategoryEntity category = categoryRepository.findByCategoryNotOptionalId(productEntity.getCategoryEntity().getId());
+//            productEntity.setCategoryEntity(category);
+//            productEntity.setAvatar(avatar);
+//        }
+//            return Prodact_List;
+//    }
 
     public ProductEntity updateProduct(ProductDto productDto,Long id) {
         Long userId = SecurityUtils.getUserId();

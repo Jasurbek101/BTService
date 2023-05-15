@@ -54,18 +54,18 @@ public class ProductController extends BaseServerModifierEntity {
         return response;
     }
 
-    @Operation(summary = "This method for GetAll", description = "This method Product getAll")
-    @GetMapping("getAll")
-    public HttpResponse<Object> getProductId() {
-        HttpResponse<Object> response = HttpResponse.build(false);
-        try {
-            response.code(HttpResponse.Status.OK).success(true).body(productService.getAllProduct())
-                    .message("successfully!!!");
-        } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Error!");
-        }
-        return response;
-    }
+//    @Operation(summary = "This method for GetAll", description = "This method Product getAll")
+//    @GetMapping("getAll")
+//    public HttpResponse<Object> getProductId() {
+//        HttpResponse<Object> response = HttpResponse.build(false);
+//        try {
+//            response.code(HttpResponse.Status.OK).success(true).body(productService.getAllProduct())
+//                    .message("successfully!!!");
+//        } catch (Exception e) {
+//            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Error!");
+//        }
+//        return response;
+//    }
 
     @Operation(summary = "This method for Put", description = "This method Product update")
     @PreAuthorize("hasRole('ADMIN')")
