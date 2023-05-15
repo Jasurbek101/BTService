@@ -44,8 +44,14 @@ public class AuthenticationController {
 
     @Operation(summary = "This method for post", description = "This method user login")
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> authenticate(@RequestBody LoginRequestDto request) {
-        return ResponseEntity.ok(service.authenticate(request));
+    public HttpResponse<Object> authenticate(@RequestBody LoginRequestDto request) {
+        HttpResponse<Object> response = HttpResponse.build(false);
+        try {
+            response.code(HttpResponse.Status.OK).success(true).body(service.authenticate(request)).message("successfully!!!");
+        }catch (Exception e){
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
+        }
+        return response;
     }
 
 

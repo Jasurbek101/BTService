@@ -36,6 +36,9 @@ public class AdminController {
     public HttpResponse<Object> getAdminList() {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
+            Long userId = SecurityUtils.getUserId();
+            String username = SecurityUtils.getUsername();
+            System.out.println("{ \n  id:"+userId+"\n"+"  username:"+username+"\n}");
             List<UserDto> adminList = userService.getAdminAll();
             if (adminList == null || adminList.isEmpty())
                 response.code(HttpResponse.Status.NOT_FOUND).message("Not found any user!!!");

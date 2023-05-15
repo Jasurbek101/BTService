@@ -35,7 +35,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-    private final Logger log = LoggerFactory.getLogger(getClass().getName());
 
 
     public TokenResponseDto register(UserDto request) {
@@ -56,7 +55,7 @@ public class AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         return TokenResponseDto.builder()
                 .token(jwtToken)
-                .allowedRoleEnums(Arrays.asList(RoleEnum.values()))
+                .user(user.toDto("password"))
                 .build();
     }
 

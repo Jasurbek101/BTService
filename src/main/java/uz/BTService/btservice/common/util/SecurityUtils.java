@@ -10,11 +10,20 @@ public class SecurityUtils {
     public static String getUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication instanceof UsernamePasswordAuthenticationToken) {
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-            if(token.getPrincipal() instanceof UserDetails){
-                UserDetails userDetails = (UserDetails) token.getPrincipal();
+        if(authentication instanceof UsernamePasswordAuthenticationToken token) {
+            if(token.getPrincipal() instanceof UserDetails userDetails){
                 return userDetails.getUsername();
+            }
+        }
+        return null;
+    }
+
+    public static UserEntity getUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication instanceof UsernamePasswordAuthenticationToken token) {
+            if(token.getPrincipal() instanceof UserEntity user){
+                return user;
             }
         }
         return null;
@@ -23,11 +32,9 @@ public class SecurityUtils {
     public static Long getUserId(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication instanceof UsernamePasswordAuthenticationToken) {
+        if(authentication instanceof UsernamePasswordAuthenticationToken token) {
 
-            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-            if(token.getPrincipal() instanceof UserEntity){
-                UserEntity userDetails = (UserEntity) token.getPrincipal();
+            if(token.getPrincipal() instanceof UserEntity userDetails){
                 return userDetails.getId();
             }
         }

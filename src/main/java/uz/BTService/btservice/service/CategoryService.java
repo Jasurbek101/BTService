@@ -7,8 +7,10 @@ import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.dto.CategoryDto;
 import uz.BTService.btservice.entity.CategoryEntity;
+import uz.BTService.btservice.exceptions.CategoryNotFoundException;
 import uz.BTService.btservice.repository.CategoryRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,53 +21,88 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryEntity addCategory(CategoryDto categoryDto) {
+    public CategoryDto addCategory(CategoryDto categoryDto) {
         Long userId = SecurityUtils.getUserId();
 
         Optional<CategoryEntity> byCreatedByName = categoryRepository.findByCreatedByName(categoryDto.getName());
         if (byCreatedByName.isPresent()) {
             CategoryEntity categoryEntity = byCreatedByName.get();
             if (categoryEntity.getStatus().equals(EntityStatus.DELETED)) {
-                categoryEntity.forCreate(userId);
+                categoryEntity.setName(categoryDto.getName());
+
+                if (categoryDto.getParentId() != null) {
+                    categoryRepository.findByCategoryId(categoryEntity.getParentId()).orElseThrow(() -> {
+                        throw new CategoryNotFoundException(categoryDto.getParentId() + " parent id not found!");
+                    });
+                    categoryEntity.setParentId(categoryDto.getParentId());
+                }
+
                 categoryEntity.setStatus(EntityStatus.CREATED);
-                return categoryRepository.save(categoryEntity);
+                categoryEntity.forCreate(userId);
+                return categoryRepository.save(categoryEntity).getDto();
+            } else {
+                throw new CategoryNotFoundException(categoryDto.getName() + " such a category exists!");
             }
         }
+
         CategoryEntity entity = categoryDto.toEntity();
         entity.forCreate(userId);
-        return categoryRepository.save(entity);
+        return categoryRepository.save(entity).getDto();
     }
 
-    public CategoryEntity getCategoryId(Long id) {
-        return categoryRepository.findByCategoryId(id).orElseThrow(() -> new RuntimeException(id + " not found!!!"));
+    public CategoryDto getCategoryIdTree(Long categoryId) {
+        if (categoryId == null) return null;
+        Optional<CategoryEntity> optRegion = categoryRepository.findById(categoryId);
+
+        CategoryDto result = null;
+        if (optRegion.isPresent()) result = optRegion.get().getDto(true);
+        return result;
     }
 
-    public List<CategoryEntity> getAllCategory() {
-        return categoryRepository.findAllCategory();
+    public List<CategoryDto> getAllCategory() {
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        categoryRepository.findAllCategory().forEach(category -> {
+            categoryDtoList.add(category.toDto(category, new CategoryDto(), "children"));
+        });
+        return categoryDtoList;
     }
 
-    public List<CategoryEntity> getAllIdCategory(Long id) {
-        return categoryRepository.findAllById(id);
+    public List<CategoryEntity> getAllIdCategory(Long length) {
+        return categoryRepository.findAllById(length);
     }
 
     @Transactional
     public Boolean delete(Long id) {
-        return categoryRepository.categoryDelete(id) > 0;
+        if(id!=null){
+            categoryRepository.findByCategoryId(id).orElseThrow(
+                    () -> new CategoryNotFoundException(id + " id not found!!!"));
+        }
+        categoryRepository.categoryDelete(id);
+        return true;
     }
 
-    public CategoryEntity updateCategory(CategoryDto categoryDto) {
+    public CategoryDto updateCategory(CategoryDto categoryDto) {
         if (!categoryDto.getName().isEmpty()) {
 
             CategoryEntity entity = categoryRepository.findByCategoryId(categoryDto.getId()).orElseThrow(
-                    () -> new RuntimeException(categoryDto.getId() + " id not found!!!"));
+                    () -> new CategoryNotFoundException(categoryDto.getId() + " id not found!!!"));
 
             entity.setName(categoryDto.getName());
+            entity.setParentId(categoryDto.getParentId());
             entity.forUpdate(SecurityUtils.getUserId());
 
-            return categoryRepository.save(entity);
+            return categoryRepository.save(entity).getDto();
         }
         return null;
     }
 
 
+    public CategoryDto getCategoryId(Long categoryId) {
+        if (categoryId == null) return null;
+        Optional<CategoryEntity> optRegion = categoryRepository.findById(categoryId);
+
+        CategoryDto result = null;
+        if (optRegion.isPresent()) result = optRegion.get().getDto(false);
+        return result;
+    }
 }

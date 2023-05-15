@@ -15,6 +15,5 @@ import java.util.List;
 public class TokenResponseDto {
 
   private String token;
-
-  private List<RoleEnum> allowedRoleEnums;
+  private UserDto user;
 }

@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.dto.CategoryDto;
 import uz.BTService.btservice.dto.response.HttpResponse;
-import uz.BTService.btservice.repository.UserRepository;
 import uz.BTService.btservice.service.CategoryService;
 
 @RestController
@@ -27,27 +26,41 @@ public class CategoryController {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.addCategory(categoryDto))
                     .message("successfully!!!");
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message(categoryDto.getName() + " bor");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message(e.getMessage());
         }
         return response;
     }
 
     @Operation(summary = "This method for getId", description = "This method Category getId")
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("getTree/{id}")
+    public HttpResponse<Object> getCategoryIdTree(@PathVariable Long id) {
+        HttpResponse<Object> response = HttpResponse.build(false);
+        try {
+            CategoryDto category = categoryService.getCategoryIdTree(id);
+            if(category ==null)  response.code(HttpResponse.Status.NOT_FOUND).success(false);
+            response.code(HttpResponse.Status.OK).success(true).body(category)
+                    .message("successfully!!!");
+        } catch (Exception e) {
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
+        }
+        return response;
+    }
+    @Operation(summary = "This method for getId", description = "This method Category getId")
     @GetMapping("get/{id}")
     public HttpResponse<Object> getCategoryId(@PathVariable Long id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(categoryService.getCategoryId(id))
+            CategoryDto category = categoryService.getCategoryId(id);
+            if(category ==null)  response.code(HttpResponse.Status.NOT_FOUND).success(false);
+            response.code(HttpResponse.Status.OK).success(true).body(category)
                     .message("successfully!!!");
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }
 
     @Operation(summary = "This method for getAll", description = "This method user getAll")
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("getAll")
     public HttpResponse<Object> getAllCategory(){
         HttpResponse<Object> response = HttpResponse.build(false);
@@ -61,12 +74,11 @@ public class CategoryController {
     }
 
     @Operation(summary = "This method for getAllId", description = "This method user getAllId")
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("getAllId/{id}")
-    public HttpResponse<Object> getAllCategory(@PathVariable Long id){
+    @GetMapping("getCategory/{length}") // nimaga kerak bu umuman kerak masku
+    public HttpResponse<Object> getAllCategory(@PathVariable Long length){
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(categoryService.getAllIdCategory(id))
+            response.code(HttpResponse.Status.OK).success(true).body(categoryService.getAllIdCategory(length))
                     .message("successfully!!!");
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Category not found!!!");
@@ -93,8 +105,13 @@ public class CategoryController {
     public HttpResponse<Object> deleteCategory(@PathVariable Long id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(categoryService.delete(id))
-                    .message("successfully!!!");
+                Boolean isDelete = categoryService.delete(id);
+            if(isDelete){
+                response.code(HttpResponse.Status.OK).success(true).body(true)
+                        .message("successfully!!!");
+            }else {
+                response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
+            }
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
         }
