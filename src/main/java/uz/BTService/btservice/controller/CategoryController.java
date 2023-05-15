@@ -7,8 +7,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.dto.CategoryDto;
 import uz.BTService.btservice.dto.response.HttpResponse;
-import uz.BTService.btservice.repository.UserRepository;
 import uz.BTService.btservice.service.CategoryService;
+
+import java.io.FileNotFoundException;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -88,12 +89,17 @@ public class CategoryController {
         return response;
     }
 
+    @Operation(summary = "This method for Delete", description = "This method Category delete")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public HttpResponse<Object> deleteCategory(@PathVariable Long id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(categoryService.delete(id))
+            Boolean delete = categoryService.delete(id);
+            if (!delete)
+                throw new FileNotFoundException("file not found");
+
+                response.code(HttpResponse.Status.OK).success(true).body(delete)
                     .message("successfully!!!");
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");

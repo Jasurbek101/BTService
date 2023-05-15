@@ -3,7 +3,6 @@ package uz.BTService.btservice.service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
@@ -11,9 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.entity.Avatar;
-import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.repository.AvatarRepository;
-import uz.BTService.btservice.repository.UserRepository;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,11 +23,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-
 @Service
 @RequiredArgsConstructor
 public class AvatarService {
-    private final UserRepository userRepository;
     private final AvatarRepository avatarRepository;
     private static final String uploadDirectory="downloads_file";
     public Avatar uploadAvatar(MultipartHttpServletRequest request) throws IOException {
@@ -58,7 +53,6 @@ public class AvatarService {
         }
         return null;
     }
-
 
     public void getAvatar(Long id, HttpServletResponse response) throws IOException {
         Optional<Avatar> optionalAttachment = avatarRepository.findById(id);

@@ -27,5 +27,8 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.name=:categoryName",nativeQuery = true)
     Optional<CategoryEntity> findByCreatedByName(@Param("categoryName")String categoryName);
 
+    @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.id=:categoryId AND btsc.status <> 'DELETED'", nativeQuery = true)
+    CategoryEntity findByCategoryNotOptionalId(@Param("categoryId") Long categoryId);
+
 //Ctrl name
 }
