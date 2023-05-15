@@ -15,4 +15,7 @@ public interface AvatarRepository  extends JpaRepository<Avatar,Long> {
     @Modifying
     @Query(value = "UPDATE bts_avatar SET status = 'DELETED' WHERE id = :attachmentId", nativeQuery = true)
     Integer avatarDelete(@Param("attachmentId") Long attachmentId);
+
+    @Query(value = "SELECT btsa.* FROM bts_avatar btsa WHERE btsa.id=:attachmentEntityId AND btsa.status <> 'DELETED'", nativeQuery = true)
+    Avatar findByNotOptionalId(@Param("attachmentEntityId") Long attachmentEntityId);
 }

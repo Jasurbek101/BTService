@@ -1,6 +1,7 @@
 package uz.BTService.btservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import uz.BTService.btservice.entity.CategoryEntity;
@@ -16,4 +17,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity,Long> {
 
     @Query(value = "SELECT btsp.* FROM bts_product btsp WHERE btsp.STATUS <> 'DELETED'", nativeQuery = true)
     List<ProductEntity> findByAllProduct();
+
+    @Modifying
+    @Query(value = "UPDATE bts_product SET status = 'DELETED' WHERE id = :productId", nativeQuery = true)
+    Integer productDeleted(@Param("productId") Long productId);
 }

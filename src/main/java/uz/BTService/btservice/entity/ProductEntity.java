@@ -1,9 +1,6 @@
 package uz.BTService.btservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
@@ -17,14 +14,15 @@ import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 @Table(name = TableNames.PRODUCT)
 public class ProductEntity extends BaseServerModifierEntity {
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private CategoryEntity categoryEntity;
 
     private String name;
 
     private Double price;
 
-    @OneToOne
+
+    @OneToOne(optional = false)
     private Avatar avatar;
 
     private String description;
