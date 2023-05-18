@@ -5,6 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.BTService.btservice.common.util.DateUtil;
 import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.dto.UserDto;
+import uz.BTService.btservice.dto.response.FilterForm;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.interfaces.UserInterface;
 import uz.BTService.btservice.repository.UserRepository;
@@ -49,7 +53,7 @@ public class UserService {
     }
 
 
-    public UserDto getUserInformation(Long id) {
+    public UserDto getUserInformation(Integer id) {
         UserEntity userInformation = userRepository.getUserInformation(id);
 //        log.atInfo().log("!Получение... Информация о пользователе по ИД");
 //        CitizenInterface regionAndNeighborhood = regionRepository.getRegionAndNeighborhood(userInformation.getRegionId());
@@ -83,7 +87,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         if (!StringUtils.isEmpty(userDto.getBirtDate())) {
             try {
-                user.setBirtDate(DateUtils.parseDate(userDto.getBirtDate(), DateUtil.PATTERN14));
+                user.setBirtDate(DateUtils.parseDate(userDto.getBirtDate(), DateUtil.PATTERN3));
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -94,7 +98,7 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean userDelete(Long id) {
+    public Boolean userDelete(Integer id) {
         Integer userDeleteIsSuccess = userRepository.userDelete(id);
         return userDeleteIsSuccess > 0;
     }
@@ -110,7 +114,15 @@ public class UserService {
         return userResponseDto;
     }
 
-    public UserDto getAdminInformation(Long id) {
+    public UserDto getAdminInformation(Integer id) {
         return userRepository.getAdminById(id).toDto();
+    }
+
+    public Sort orderSortField(String field) {
+        return Sort.by(Sort.Order.by(field));
+    }
+
+    public Pageable pageable(Sort sort, FilterForm filterForm) {
+        return PageRequest.of(filterForm.getStart() / filterForm.getLength(), filterForm.getLength(), sort);
     }
 }

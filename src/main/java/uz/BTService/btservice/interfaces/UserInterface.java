@@ -6,15 +6,15 @@ import uz.BTService.btservice.entity.role.RoleEnum;
 import java.util.Date;
 
 public interface UserInterface {
-    Long getId();
+    Integer getId();
 
     EntityStatus getStatus();
 
-    Long getCreated_by();
+    Integer getCreated_by();
 
     Date getCreated_date();
 
-    Long getModified_by();
+    Integer getModified_by();
 
     Date getUpdated_date();
 
@@ -34,13 +34,13 @@ public interface UserInterface {
 
     String getUsername();
 
-    Long getImage_id();
+    Integer getImage_id();
 
-    Long getNeighborhood_id();
+    Integer getNeighborhood_id();
 
-    Long getRegion_id();
+    Integer getRegion_id();
 
-    Long getParent_region_id();
+    Integer getParent_region_id();
 
     String getRegion_name();
 

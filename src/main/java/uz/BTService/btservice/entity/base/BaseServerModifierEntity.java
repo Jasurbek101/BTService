@@ -22,15 +22,15 @@ public class BaseServerModifierEntity extends BaseServerEntity{
     private LocalDateTime updatedDate;
 
     @Column(name = "createdBy")
-    private Long createdBy;
+    private Integer createdBy;
 
     @Column(name = "modifiedBy")
-    private Long modifiedBy;
+    private Integer modifiedBy;
 
     public void forCreate(){
         forCreate(null);
     }
-    public void forCreate(Long creatorId){
+    public void forCreate(Integer creatorId){
         this.setCreatedBy(creatorId);
         this.setCreatedDate(LocalDateTime.now());
         this.setStatus(EntityStatus.CREATED);
@@ -40,7 +40,7 @@ public class BaseServerModifierEntity extends BaseServerEntity{
         forUpdate(null);
     }
 
-    public void forUpdate(Long modifierId){
+    public void forUpdate(Integer modifierId){
         this.setModifiedBy(modifierId);
         this.setUpdatedDate(LocalDateTime.now());
         this.setStatus(EntityStatus.UPDATED);

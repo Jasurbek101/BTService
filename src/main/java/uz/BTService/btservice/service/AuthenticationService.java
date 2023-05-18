@@ -83,7 +83,7 @@ public class AuthenticationService {
             } else user.forCreate();
 
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            user.setBirtDate(DateUtils.parseDate(userDto.getBirtDate(), DateUtil.PATTERN14));
+            user.setBirtDate(DateUtils.parseDate(userDto.getBirtDate(), DateUtil.PATTERN3));
             user.setRoleEnum(userDto.getRoleEnum() == RoleEnum.ADMIN ? RoleEnum.ADMIN : RoleEnum.USER);
         } catch (ParseException e) {
             throw new RuntimeException(e);

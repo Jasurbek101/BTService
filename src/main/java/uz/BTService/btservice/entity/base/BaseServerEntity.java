@@ -13,7 +13,7 @@ import org.springframework.beans.BeanUtils;
 public class BaseServerEntity extends BaseObject{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "status", length = 32, columnDefinition = "varchar(32) default 'CREATED'")
     @Enumerated(value = EnumType.STRING)
@@ -28,7 +28,7 @@ public class BaseServerEntity extends BaseObject{
     }
 
     @Override
-    public Long getUniqueId() {
+    public Integer getUniqueId() {
         return getId();
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     @Query(value = "SELECT * FROM bts_user du WHERE du.username = :username AND status <> 'DELETED'", nativeQuery = true)
     Optional<UserEntity> findByUsername(@Param("username") String username);
@@ -47,16 +47,16 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserInterface> getAllUserInterface();
 
     @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
-    UserEntity getUserInformation(@Param("userInformationId") Long id);
+    UserEntity getUserInformation(@Param("userInformationId") Integer id);
 
     @Modifying
     @Query(value = "UPDATE bts_user SET status = 'DELETED' WHERE id = :userId AND status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
-    Integer userDelete(@Param("userId") Long userId);
+    Integer userDelete(@Param("userId") Integer userId);
 
 
     @Query(value = "SELECT * FROM bts_user WHERE role_enum = 'ADMIN' AND status <> 'DELETED'", nativeQuery = true)
     List<UserEntity> getAllAdmin();
 
     @Query(value = "SELECT * FROM bts_user WHERE id = :adminId AND role_enum = 'ADMIN' AND status <> 'DELETED'", nativeQuery = true)
-    UserEntity getAdminById(@Param("adminId") Long adminId);
+    UserEntity getAdminById(@Param("adminId") Integer adminId);
 }

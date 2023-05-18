@@ -4,15 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.dto.ProductDto;
 import uz.BTService.btservice.dto.response.HttpResponse;
-import uz.BTService.btservice.entity.Avatar;
 import uz.BTService.btservice.entity.ProductEntity;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
-import uz.BTService.btservice.exceptionsAvatar.FileNotFoundException;
-import uz.BTService.btservice.repository.ProductRepository;
+import uz.BTService.btservice.exceptions.ProductException;
 import uz.BTService.btservice.service.ProductService;
 
 
@@ -23,60 +22,59 @@ import uz.BTService.btservice.service.ProductService;
 public class ProductController extends BaseServerModifierEntity {
 
     private final ProductService productService;
+
     @Operation(summary = "This method for post", description = "This method Product add")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public HttpResponse<Object> addProduct(@RequestBody ProductDto productDto, HttpServletResponse responses) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(productService.addProduct(productDto, responses))
-                    .message("successfully!!!");
+
+            response.code(HttpResponse.Status.OK).success(true).body(productService.addProduct(productDto, responses)).message(HttpResponse.Status.OK.name());
+
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message("error");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }
+
+    @Operation(summary = "This method for get", description = "This method get all product")
+    @GetMapping("/all")
+    public HttpResponse<Object> getProductAll() {
+        HttpResponse<Object> response = HttpResponse.build(false);
+        try {
+            response.code(HttpResponse.Status.OK).success(true).body(productService.getProductAllList()).message(HttpResponse.Status.OK.name());
+
+        } catch (ProductException e) {
+            response.code(HttpResponse.Status.BAD_REQUEST).success(false).message(e.getMessage());
+        }
+        return response;
+    }
+
 
     @Operation(summary = "This method for GetId", description = "This method Product GetId")
-    @GetMapping("get/{id}")
-    public HttpResponse<Object> getProductId(@PathVariable Long id) {
+    @GetMapping("/get/{id}")
+    public HttpResponse<Object> getProductId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            ProductEntity product = productService.getProduct(id);
-            System.out.println("test->>>>>>>>>>>>>>>>>>>>>> "+ product);
-            response.code(HttpResponse.Status.OK).success(true).body(product)
-                    .message("successfully!!!");
+            ProductEntity product = productService.getById(id);
+
+            response.code(HttpResponse.Status.OK).success(true).body(product).message(HttpResponse.Status.OK.name());
+
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message(id + " not found!!!");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            response.code(HttpResponse.Status.BAD_REQUEST).success(false).message(e.getMessage());
         }
         return response;
     }
 
-//    @Operation(summary = "This method for GetAll", description = "This method Product getAll")
-//    @GetMapping("getAll")
-//    public HttpResponse<Object> getProductId() {
-//        HttpResponse<Object> response = HttpResponse.build(false);
-//        try {
-//            response.code(HttpResponse.Status.OK).success(true).body(productService.getAllProduct())
-//                    .message("successfully!!!");
-//        } catch (Exception e) {
-//            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Error!");
-//        }
-//        return response;
-//    }
-
-    @Operation(summary = "This method for Put", description = "This method Product update")
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/update/{id}")
-    public HttpResponse<Object> update(@RequestBody ProductDto productDto,@PathVariable Long id) {
+    @Operation(summary = "This method for get", description = "Product get category by id")
+    @GetMapping("/category/{id}")
+    public HttpResponse<Object> getProductByCategoryId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(productService.updateProduct(productDto,id))
-                    .message("successfully!!!");
+            response.code(HttpResponse.Status.OK).success(true).body(productService.getByCategoryId(id)).message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(productDto.getName() + " error");
+            response.code(HttpResponse.Status.BAD_REQUEST).success(false).message(e.getMessage());
         }
         return response;
     }
@@ -85,13 +83,12 @@ public class ProductController extends BaseServerModifierEntity {
     @Operation(summary = "This method for Delete", description = "This method Product delete")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public HttpResponse<Object> deleteProductId(@PathVariable Long id) {
+    public HttpResponse<Object> deleteProductId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(productService.delete(id))
-                    .message("successfully!!!");
+            response.code(HttpResponse.Status.OK).success(true).body(productService.delete(id)).message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }

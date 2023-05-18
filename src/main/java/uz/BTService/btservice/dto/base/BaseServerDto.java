@@ -11,6 +11,6 @@ import uz.BTService.btservice.constants.EntityStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseServerDto {
-    private Long id;
+    private Integer id;
     private EntityStatus status;
 }

@@ -36,17 +36,15 @@ public class AdminController {
     public HttpResponse<Object> getAdminList() {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            Long userId = SecurityUtils.getUserId();
-            String username = SecurityUtils.getUsername();
-            System.out.println("{ \n  id:"+userId+"\n"+"  username:"+username+"\n}");
+
             List<UserDto> adminList = userService.getAdminAll();
             if (adminList == null || adminList.isEmpty())
                 response.code(HttpResponse.Status.NOT_FOUND).message("Not found any user!!!");
             else
-                response.code(HttpResponse.Status.OK).success(true).body(adminList).message("successfully!!!");
+                response.code(HttpResponse.Status.OK).success(true).body(adminList).message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             e.printStackTrace();
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR);
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }
@@ -59,13 +57,10 @@ public class AdminController {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             userDto.setRoleEnum(RoleEnum.ADMIN);
-            response.code(HttpResponse.Status.OK).success(true).body(service.register(userDto)).message("successfully!!!");
-        }catch (RuntimeException e){
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
-        }
-        catch (Exception e){
+            response.code(HttpResponse.Status.OK).success(true).body(service.register(userDto)).message(HttpResponse.Status.OK.name());
+        } catch (Exception e) {
             e.printStackTrace();
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(userDto.toString()+" error in the data sent");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }
@@ -74,11 +69,11 @@ public class AdminController {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Operation(summary = "This method for get", description = "This method is used to get how many points the admin user has scored")
     @GetMapping("/info/{id}")
-    public HttpResponse<Object> getAdminInformation(@PathVariable Long id) {
+    public HttpResponse<Object> getAdminInformation(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             UserDto userDto = userService.getAdminInformation(id);
-            response.code(HttpResponse.Status.OK).success(true).body(userDto).message("successfully!!!");
+            response.code(HttpResponse.Status.OK).success(true).body(userDto).message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             e.printStackTrace();
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR);
@@ -90,17 +85,17 @@ public class AdminController {
     @Operation(summary = "This user for update", description = "This method is designed to delete a user by ID")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public HttpResponse<Object> userDelete(@PathVariable Long id) {
+    public HttpResponse<Object> userDelete(@PathVariable Integer id) {
 
         HttpResponse<Object> response = new HttpResponse<>(false);
 
         try {
             if (userService.userDelete(id)) {
-                return response.code(HttpResponse.Status.OK).success(true).body(Boolean.TRUE).message(id+"-id admin deleted successfully");
-            }else response.code(HttpResponse.Status.NOT_FOUND).success(false).message(id+" id user not found!!!");
+                return response.code(HttpResponse.Status.OK).success(true).body(Boolean.TRUE).message(id + "-id admin deleted successfully");
+            } else response.code(HttpResponse.Status.NOT_FOUND).success(false).message(id + " id user not found!!!");
         } catch (Exception ex) {
             ex.printStackTrace();
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false);
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(ex.getMessage());
         }
         return response;
     }

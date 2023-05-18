@@ -22,7 +22,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public CategoryDto addCategory(CategoryDto categoryDto) {
-        Long userId = SecurityUtils.getUserId();
+        Integer userId = SecurityUtils.getUserId();
 
         Optional<CategoryEntity> byCreatedByName = categoryRepository.findByCreatedByName(categoryDto.getName());
         if (byCreatedByName.isPresent()) {
@@ -50,7 +50,7 @@ public class CategoryService {
         return categoryRepository.save(entity).getDto();
     }
 
-    public CategoryDto getCategoryIdTree(Long categoryId) {
+    public CategoryDto getCategoryIdTree(Integer categoryId) {
         if (categoryId == null) return null;
         Optional<CategoryEntity> optRegion = categoryRepository.findById(categoryId);
 
@@ -67,12 +67,12 @@ public class CategoryService {
         return categoryDtoList;
     }
 
-    public List<CategoryEntity> getAllIdCategory(Long length) {
+    public List<CategoryEntity> getAllIdCategory(Integer length) {
         return categoryRepository.findAllById(length);
     }
 
     @Transactional
-    public Boolean delete(Long id) {
+    public Boolean delete(Integer id) {
         if(id!=null){
             categoryRepository.findByCategoryId(id).orElseThrow(
                     () -> new CategoryNotFoundException(id + " id not found!!!"));
@@ -97,7 +97,7 @@ public class CategoryService {
     }
 
 
-    public CategoryDto getCategoryId(Long categoryId) {
+    public CategoryDto getCategoryId(Integer categoryId) {
         if (categoryId == null) return null;
         Optional<CategoryEntity> optRegion = categoryRepository.findById(categoryId);
 

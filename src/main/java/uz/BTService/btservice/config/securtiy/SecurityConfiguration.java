@@ -22,13 +22,18 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
 
+    private static final String[] WHITE_LIST = new String[]{
+            "/**",
+            "/api/v1/auth/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
+                .requestMatchers(WHITE_LIST)
                 .permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**")
                 .permitAll()

@@ -18,13 +18,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @Operation(summary = "This method for post", description = "This method Category add")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public HttpResponse<Object> addCategory(@RequestBody CategoryDto categoryDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.addCategory(categoryDto))
-                    .message("successfully!!!");
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message(e.getMessage());
         }
@@ -33,13 +33,13 @@ public class CategoryController {
 
     @Operation(summary = "This method for getId", description = "This method Category getId")
     @GetMapping("getTree/{id}")
-    public HttpResponse<Object> getCategoryIdTree(@PathVariable Long id) {
+    public HttpResponse<Object> getCategoryIdTree(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             CategoryDto category = categoryService.getCategoryIdTree(id);
             if(category ==null)  response.code(HttpResponse.Status.NOT_FOUND).success(false);
             response.code(HttpResponse.Status.OK).success(true).body(category)
-                    .message("successfully!!!");
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
@@ -47,13 +47,13 @@ public class CategoryController {
     }
     @Operation(summary = "This method for getId", description = "This method Category getId")
     @GetMapping("get/{id}")
-    public HttpResponse<Object> getCategoryId(@PathVariable Long id) {
+    public HttpResponse<Object> getCategoryId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             CategoryDto category = categoryService.getCategoryId(id);
             if(category ==null)  response.code(HttpResponse.Status.NOT_FOUND).success(false);
             response.code(HttpResponse.Status.OK).success(true).body(category)
-                    .message("successfully!!!");
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
@@ -66,7 +66,7 @@ public class CategoryController {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.getAllCategory())
-                    .message("successfully!!!");
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Category not found!!!");
         }
@@ -74,12 +74,12 @@ public class CategoryController {
     }
 
     @Operation(summary = "This method for getAllId", description = "This method user getAllId")
-    @GetMapping("getCategory/{length}") // nimaga kerak bu umuman kerak masku
-    public HttpResponse<Object> getAllCategory(@PathVariable Long length){
+    @GetMapping("getCategory/{length}") // nimaga kerak bu method umuman kerak masku
+    public HttpResponse<Object> getAllCategory(@PathVariable Integer length){
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.getAllIdCategory(length))
-                    .message("successfully!!!");
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).message("Category not found!!!");
         }
@@ -93,27 +93,27 @@ public class CategoryController {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             response.code(HttpResponse.Status.OK).success(true).body(categoryService.updateCategory(categoryDto))
-                    .message("successfully!!!");
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(categoryDto.getName() + " error");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public HttpResponse<Object> deleteCategory(@PathVariable Long id) {
+    public HttpResponse<Object> deleteCategory(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
                 Boolean isDelete = categoryService.delete(id);
             if(isDelete){
                 response.code(HttpResponse.Status.OK).success(true).body(true)
-                        .message("successfully!!!");
+                        .message(HttpResponse.Status.OK.name());
             }else {
-                response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
+                response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message("Category cannot be deleted");
             }
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + " not found!!!");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(HttpResponse.Status.OK.name());
         }
         return response;
     }

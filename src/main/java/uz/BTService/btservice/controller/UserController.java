@@ -31,7 +31,7 @@ public class UserController {
             if (userList == null || userList.isEmpty())
                 response.code(HttpResponse.Status.NOT_FOUND).message("Not found any user!!!");
             else
-                response.code(HttpResponse.Status.OK).success(true).body(userList).message("successfully!!!");
+                response.code(HttpResponse.Status.OK).success(true).body(userList).message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             e.printStackTrace();
             response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR);
@@ -43,14 +43,14 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "This method for get", description = "This method is used to get how many points the admin user has scored")
     @GetMapping("/info/{id}")
-    public HttpResponse<Object> getUserInformation(@PathVariable Long id) {
+    public HttpResponse<Object> getUserInformation(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             UserDto userDto = userService.getUserInformation(id);
-            response.code(HttpResponse.Status.OK).success(true).body(userDto).message("successfully!!!");
+            response.code(HttpResponse.Status.OK).success(true).body(userDto).message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             e.printStackTrace();
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR);
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
         }
         return response;
     }
@@ -63,10 +63,10 @@ public class UserController {
 
         try {
             if (userService.updateUser(userDto)) {
-                return response.code(HttpResponse.Status.OK).body(true).success(true);
+                return response.code(HttpResponse.Status.OK).body(true).success(true).message("User update successfully!");
             }
         } catch (Exception ex) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false);
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(ex.getMessage());
         }
         return response;
     }
@@ -75,7 +75,7 @@ public class UserController {
     @Operation(summary = "This user for update", description = "This method is designed to delete a user by ID")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public HttpResponse<Object> userDelete(@PathVariable Long id) {
+    public HttpResponse<Object> userDelete(@PathVariable Integer id) {
 
         HttpResponse<Object> response = new HttpResponse<>(false);
 
@@ -85,7 +85,7 @@ public class UserController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(id + "-id not found!!!");
+            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(ex.getMessage());
         }
         return response;
     }

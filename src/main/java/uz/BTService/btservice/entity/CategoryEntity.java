@@ -1,5 +1,6 @@
 package uz.BTService.btservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.constants.EntityStatus;
@@ -24,16 +25,17 @@ public class CategoryEntity extends BaseServerModifierEntity {
     private String name;
 
     @Column(name = "parentId")
-    private Long parentId;
+    private Integer parentId;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parentId", referencedColumnName = "id")
     List<CategoryEntity> children = new ArrayList<>();
 
+    @JsonIgnore
     public CategoryDto getDto(){
-        return getDto(true);
+        return getDto(false);
     }
-
+    @JsonIgnore
     public CategoryDto getDto(boolean withChildren) {
         CategoryDto dto = entityToDto(this, new CategoryDto());
         if (this.getChildren() != null && withChildren) {

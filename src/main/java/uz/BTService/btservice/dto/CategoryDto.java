@@ -16,7 +16,7 @@ public class CategoryDto extends BaseServerModifierDto {
     @NotBlank(message = "name must not be empty")
     private String name;
 
-    private Long parentId;
+    private Integer parentId;
 
     private List<CategoryDto> children;
 

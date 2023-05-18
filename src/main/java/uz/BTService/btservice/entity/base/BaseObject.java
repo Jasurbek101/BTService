@@ -3,7 +3,7 @@ package uz.BTService.btservice.entity.base;
 import java.util.Objects;
 
 public abstract class BaseObject {
-    public abstract Long getUniqueId();
+    public abstract Integer getUniqueId();
 
     @Override
     public int hashCode() {
