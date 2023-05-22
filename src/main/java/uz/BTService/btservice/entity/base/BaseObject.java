@@ -1,5 +1,6 @@
 package uz.BTService.btservice.entity.base;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class BaseObject {

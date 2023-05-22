@@ -1,12 +1,12 @@
 package uz.BTService.btservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.dto.ProductDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,6 +26,7 @@ public class ProductEntity extends BaseServerModifierEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CategoryEntity category;
 
     @OneToMany(fetch = FetchType.EAGER)
