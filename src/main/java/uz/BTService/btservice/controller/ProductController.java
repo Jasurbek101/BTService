@@ -29,11 +29,17 @@ public class ProductController extends BaseServerModifierEntity {
     public HttpResponse<Object> addProduct(@RequestBody ProductDto productDto, HttpServletResponse responses) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-
-            response.code(HttpResponse.Status.OK).success(true).body(productService.addProduct(productDto, responses)).message(HttpResponse.Status.OK.name());
+            response
+                    .code(HttpResponse.Status.OK)
+                    .success(true)
+                    .body(productService.addProduct(productDto, responses))
+                    .message(HttpResponse.Status.OK.name());
 
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
+            response
+                    .code(HttpResponse.Status.INTERNAL_SERVER_ERROR)
+                    .success(false)
+                    .message(e.getMessage());
         }
         return response;
     }
@@ -43,10 +49,17 @@ public class ProductController extends BaseServerModifierEntity {
     public HttpResponse<Object> getProductAll() {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(productService.getProductAllList()).message(HttpResponse.Status.OK.name());
+            response
+                    .code(HttpResponse.Status.OK)
+                    .success(true)
+                    .body(productService.getProductAllList())
+                    .message(HttpResponse.Status.OK.name());
 
         } catch (ProductException e) {
-            response.code(HttpResponse.Status.BAD_REQUEST).success(false).message(e.getMessage());
+            response
+                    .code(HttpResponse.Status.BAD_REQUEST)
+                    .success(false)
+                    .message(e.getMessage());
         }
         return response;
     }
@@ -54,15 +67,21 @@ public class ProductController extends BaseServerModifierEntity {
 
     @Operation(summary = "This method for GetId", description = "This method Product GetId")
     @GetMapping("/get/{id}")
-    public HttpResponse<Object> getProductId(@PathVariable Integer id) {
+    public HttpResponse<Object> getProductNameSearch(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            ProductEntity product = productService.getById(id);
 
-            response.code(HttpResponse.Status.OK).success(true).body(product).message(HttpResponse.Status.OK.name());
+            response
+                    .code(HttpResponse.Status.OK)
+                    .success(true)
+                    .body(productService.getById(id))
+                    .message(HttpResponse.Status.OK.name());
 
         } catch (Exception e) {
-            response.code(HttpResponse.Status.BAD_REQUEST).success(false).message(e.getMessage());
+            response
+                    .code(HttpResponse.Status.BAD_REQUEST)
+                    .success(false)
+                    .message(e.getMessage());
         }
         return response;
     }
@@ -72,13 +91,41 @@ public class ProductController extends BaseServerModifierEntity {
     public HttpResponse<Object> getProductByCategoryId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(productService.getByCategoryId(id)).message(HttpResponse.Status.OK.name());
+            response
+                    .code(HttpResponse.Status.OK)
+                    .success(true)
+                    .body(productService.getByCategoryId(id))
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
-            response.code(HttpResponse.Status.BAD_REQUEST).success(false).message(e.getMessage());
+            response
+                    .code(HttpResponse.Status.BAD_REQUEST)
+                    .success(false)
+                    .message(e.getMessage());
         }
         return response;
     }
 
+    @Operation(summary = "This method for Get", description = "This method Product Search product name")
+    @GetMapping("/name/{productName}")
+    public HttpResponse<Object> getProductId(@PathVariable String productName) {
+        HttpResponse<Object> response = HttpResponse.build(false);
+        try {
+
+            response
+                    .code(HttpResponse.Status.OK)
+                    .success(true)
+                    .body(productService.getProductNameSearch(productName))
+                    .message(HttpResponse.Status.OK.name());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response
+                    .code(HttpResponse.Status.BAD_REQUEST)
+                    .success(false)
+                    .message(e.getMessage());
+        }
+        return response;
+    }
 
     @Operation(summary = "This method for Delete", description = "This method Product delete")
     @PreAuthorize("hasRole('ADMIN')")
@@ -86,9 +133,16 @@ public class ProductController extends BaseServerModifierEntity {
     public HttpResponse<Object> deleteProductId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            response.code(HttpResponse.Status.OK).success(true).body(productService.delete(id)).message(HttpResponse.Status.OK.name());
+            response
+                    .code(HttpResponse.Status.OK)
+                    .success(true)
+                    .body(productService.delete(id))
+                    .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(e.getMessage());
+            response
+                    .code(HttpResponse.Status.INTERNAL_SERVER_ERROR)
+                    .success(false)
+                    .message(e.getMessage());
         }
         return response;
     }

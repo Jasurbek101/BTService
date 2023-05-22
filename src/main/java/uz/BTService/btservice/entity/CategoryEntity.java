@@ -6,6 +6,7 @@ import lombok.*;
 import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.dto.CategoryDto;
+import uz.BTService.btservice.dto.ProductDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 import java.util.ArrayList;
@@ -45,5 +46,8 @@ public class CategoryEntity extends BaseServerModifierEntity {
                             .filter(p -> p.getStatus() != EntityStatus.DELETED).collect(Collectors.toList()));
         }
         return dto;
+    }
+    public CategoryDto toDto(String... ignoreProperties){
+        return toDto(this, new CategoryDto(), ignoreProperties);
     }
 }

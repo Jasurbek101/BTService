@@ -1,7 +1,10 @@
 package uz.BTService.btservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.dto.base.BaseServerModifierDto;
+import uz.BTService.btservice.entity.AttachEntity;
 import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.entity.ProductEntity;
 
@@ -20,7 +23,7 @@ public class ProductDto  extends BaseServerModifierDto {
 
     private Integer categoryId;
 
-    private CategoryEntity category;
+    private CategoryDto category;
 
     private List<String> attachId;
     private List<AttachResponseDTO> attach;
