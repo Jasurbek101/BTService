@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.constants.TableNames;
-import uz.BTService.btservice.dto.ProductDto;
+import uz.BTService.btservice.controller.dto.response.ProductResponseForAdminDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 import java.util.List;
@@ -39,8 +39,8 @@ public class ProductEntity extends BaseServerModifierEntity {
     /************************************************************
      * ******************** CONVERT TO DTO ***********************
      * ***********************************************************/
-    public ProductDto toDto(String... ignoreProperties){
-        return toDto(this, new ProductDto(), ignoreProperties);
+    public ProductResponseForAdminDto toDto(String... ignoreProperties){
+        return toDto(this, new ProductResponseForAdminDto(), ignoreProperties);
     }
 
 }

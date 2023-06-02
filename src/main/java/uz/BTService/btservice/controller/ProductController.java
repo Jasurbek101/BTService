@@ -1,18 +1,23 @@
 package uz.BTService.btservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import uz.BTService.btservice.dto.ProductDto;
-import uz.BTService.btservice.dto.response.HttpResponse;
+import uz.BTService.btservice.controller.convert.ProductConvert;
+import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
+import uz.BTService.btservice.controller.dto.request.ProductCreateRequestDto;
+import uz.BTService.btservice.controller.dto.response.ProductResponseForAdminDto;
+import uz.BTService.btservice.controller.dto.response.ProductResponseForUserDto;
 import uz.BTService.btservice.entity.ProductEntity;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 import uz.BTService.btservice.exceptions.ProductException;
 import uz.BTService.btservice.service.ProductService;
+
+import java.util.List;
 
 
 @RestController
@@ -23,129 +28,80 @@ public class ProductController extends BaseServerModifierEntity {
 
     private final ProductService productService;
 
-    @Operation(summary = "This method for post", description = "This method Product add")
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/add")
-    public HttpResponse<Object> addProduct(@RequestBody ProductDto productDto, HttpServletResponse responses) {
-        HttpResponse<Object> response = HttpResponse.build(false);
-        try {
-            response
-                    .code(HttpResponse.Status.OK)
-                    .success(true)
-                    .body(productService.addProduct(productDto, responses))
-                    .message(HttpResponse.Status.OK.name());
-
-        } catch (Exception e) {
-            response
-                    .code(HttpResponse.Status.INTERNAL_SERVER_ERROR)
-                    .success(false)
-                    .message(e.getMessage());
-        }
-        return response;
-    }
-
-    @Operation(summary = "This method for get", description = "This method get all product")
-    @GetMapping("/all")
-    public HttpResponse<Object> getProductAll() {
-        HttpResponse<Object> response = HttpResponse.build(false);
-        try {
-            response
-                    .code(HttpResponse.Status.OK)
-                    .success(true)
-                    .body(productService.getProductAllList())
-                    .message(HttpResponse.Status.OK.name());
-
-        } catch (ProductException e) {
-            response
-                    .code(HttpResponse.Status.BAD_REQUEST)
-                    .success(false)
-                    .message(e.getMessage());
-        }
-        return response;
-    }
-
 
     @Operation(summary = "This method for GetId", description = "This method Product GetId")
     @GetMapping("/get/{id}")
-    public HttpResponse<Object> getProductNameSearch(@PathVariable Integer id) {
+    public HttpResponse<Object> getProductId(@PathVariable Integer id) {
         HttpResponse<Object> response = HttpResponse.build(false);
-        try {
+
+        ProductEntity responseProduct = productService.getById(id);
+        ProductResponseForUserDto responseForUserDto = ProductConvert.from(responseProduct);
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(responseForUserDto)
+                .message(HttpResponse.Status.OK.name());
+
+    }
+
+
+
+    @Operation(summary = "This method for get", description = "This method get all product")
+    @GetMapping("/get/all")
+    public HttpResponse<Object> getProductAll() {
+
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        List<ProductEntity> productAllList = productService.getProductAllList();
+        List<ProductResponseForUserDto> responseForUserDtoList = ProductConvert.from(productAllList);
 
             response
                     .code(HttpResponse.Status.OK)
                     .success(true)
-                    .body(productService.getById(id))
+                    .body(responseForUserDtoList)
                     .message(HttpResponse.Status.OK.name());
 
-        } catch (Exception e) {
-            response
-                    .code(HttpResponse.Status.BAD_REQUEST)
-                    .success(false)
-                    .message(e.getMessage());
-        }
+
         return response;
     }
+
 
     @Operation(summary = "This method for get", description = "Product get category by id")
-    @GetMapping("/category/{id}")
+    @GetMapping("/get/category/{id}")
     public HttpResponse<Object> getProductByCategoryId(@PathVariable Integer id) {
+
         HttpResponse<Object> response = HttpResponse.build(false);
-        try {
-            response
+
+        List<ProductEntity> responseEntityList = productService.getByCategoryId(id);
+        List<ProductResponseForUserDto> responseForUserDtoList = ProductConvert.from(responseEntityList);
+
+        return response
                     .code(HttpResponse.Status.OK)
                     .success(true)
-                    .body(productService.getByCategoryId(id))
+                    .body(responseForUserDtoList)
                     .message(HttpResponse.Status.OK.name());
-        } catch (Exception e) {
-            response
-                    .code(HttpResponse.Status.BAD_REQUEST)
-                    .success(false)
-                    .message(e.getMessage());
-        }
-        return response;
+
     }
+
+
 
     @Operation(summary = "This method for Get", description = "This method Product Search product name")
-    @GetMapping("/name/{productName}")
-    public HttpResponse<Object> getProductId(@PathVariable String productName) {
+    @GetMapping("/get/name/{productName}")
+    public HttpResponse<Object> getProductNameSearch(@PathVariable String productName) {
         HttpResponse<Object> response = HttpResponse.build(false);
-        try {
 
-            response
+        List<ProductEntity> responseEntityList = productService.getProductNameSearch(productName);
+        List<ProductResponseForUserDto> responseProductList = ProductConvert.from(responseEntityList);
+
+        return response
                     .code(HttpResponse.Status.OK)
                     .success(true)
-                    .body(productService.getProductNameSearch(productName))
+                    .body(responseProductList)
                     .message(HttpResponse.Status.OK.name());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            response
-                    .code(HttpResponse.Status.BAD_REQUEST)
-                    .success(false)
-                    .message(e.getMessage());
-        }
-        return response;
     }
 
-    @Operation(summary = "This method for Delete", description = "This method Product delete")
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete/{id}")
-    public HttpResponse<Object> deleteProductId(@PathVariable Integer id) {
-        HttpResponse<Object> response = HttpResponse.build(false);
-        try {
-            response
-                    .code(HttpResponse.Status.OK)
-                    .success(true)
-                    .body(productService.delete(id))
-                    .message(HttpResponse.Status.OK.name());
-        } catch (Exception e) {
-            response
-                    .code(HttpResponse.Status.INTERNAL_SERVER_ERROR)
-                    .success(false)
-                    .message(e.getMessage());
-        }
-        return response;
-    }
 }
 
 

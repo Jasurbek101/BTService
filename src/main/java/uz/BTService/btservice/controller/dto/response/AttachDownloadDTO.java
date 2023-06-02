@@ -1,4 +1,4 @@
-package uz.BTService.btservice.dto;
+package uz.BTService.btservice.controller.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

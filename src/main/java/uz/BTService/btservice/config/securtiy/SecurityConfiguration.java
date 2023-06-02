@@ -23,8 +23,12 @@ public class SecurityConfiguration {
     private final LogoutHandler logoutHandler;
 
     private static final String[] WHITE_LIST = new String[]{
-            "/**",
-            "/api/v1/auth/**"
+            "/api/v1/auth/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/api/v1/category/get/**",
+            "/api/v1/product/get/**",
+            "/attach/**"
     };
 
     @Bean
@@ -34,8 +38,6 @@ public class SecurityConfiguration {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers(WHITE_LIST)
-                .permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

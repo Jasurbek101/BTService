@@ -10,7 +10,7 @@ import uz.BTService.btservice.entity.ProductEntity;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<ProductEntity,Integer> {
+public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
 
     @Query(value = "SELECT p FROM ProductEntity p INNER JOIN CategoryEntity c ON p.id=:productId AND c.id=p.category AND p.status <> 'DELETED' AND c.status <> 'DELETED'")
     Optional<ProductEntity> findByProductId(@Param("productId") Integer productId);
@@ -21,27 +21,29 @@ public interface ProductRepository extends JpaRepository<ProductEntity,Integer> 
     @Query(value = "SELECT bp.*\n" +
             "FROM bts_product bp\n" +
             "LEFT JOIN bts_category bc on bp.category_id = bc.id\n" +
-            "WHERE bp.status <> 'DELETED'", nativeQuery = true)
+            "WHERE bp.status <> 'DELETED' AND bc.status <> 'DELETED'", nativeQuery = true)
     List<ProductEntity> getAllProduct();
-
-    List<ProductEntity> findAllByStatusNot(EntityStatus status);
 
 
     @Query(value = "SELECT btsp.* FROM bts_product btsp", nativeQuery = true)
     List<ProductEntity> getAll();
 
-    @Query(value = "SELECT p FROM ProductEntity p INNER JOIN CategoryEntity c ON p.categoryId = :categoryId AND c.id=p.category AND p.status <> 'DELETED' AND c.status <> 'DELETED'")
+    @Query(value = "SELECT btsp.* FROM bts_product btsp " +
+            "INNER JOIN bts_category btsc ON btsp.category_id = :categoryId " +
+            "AND btsc.id=btsp.category_id " +
+            "AND btsp.status <> 'DELETED' " +
+            "AND btsc.status <> 'DELETED'", nativeQuery = true)
     List<ProductEntity> getCategoryId(@Param("categoryId") Integer categoryId);
 
 
     @Query(value = "SELECT btsp.* FROM bts_product btsp\n" +
-            "INNER JOIN bts_category btsc ON btsp.category_id = btsc.id\n" +
-            "     WHERE btsp.name ILIKE ANY (ARRAY [:categoryNameList])\n" +
-            "        AND btsp.status<>'DELETED'AND btsc.status<>'DELETED'\n" +
-            "     ORDER BY CASE WHEN\n" +
-            "      btsp.name = ANY (ARRAY [:categoryNameList])\n" +
-            "       THEN 0 ELSE 1 END,\n" +
-            "btsp.name DESC", nativeQuery = true)
+            "            INNER JOIN bts_category btsc ON btsp.category_id = btsc.id\n" +
+            "                WHERE btsp.name ILIKE ANY (ARRAY [:categoryNameList])\n" +
+            "                   AND btsp.status<>'DELETED'\n" +
+            "                   AND btsc.status<>'DELETED'\n" +
+            "                 ORDER BY CASE WHEN\n" +
+            "                  btsp.name = ANY (ARRAY [:categoryNameList])\n" +
+            "                   THEN 0 ELSE 1 END, btsp.name", nativeQuery = true)
     List<ProductEntity> getProductNameListSearch(@Param("categoryNameList") String[] categoryNameList);
 
     @Modifying

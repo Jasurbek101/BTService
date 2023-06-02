@@ -1,7 +1,7 @@
 package uz.BTService.btservice.entity.base;
 
 import uz.BTService.btservice.constants.EntityStatus;
-import uz.BTService.btservice.dto.base.BaseServerDto;
+import uz.BTService.btservice.controller.dto.base.BaseServerDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

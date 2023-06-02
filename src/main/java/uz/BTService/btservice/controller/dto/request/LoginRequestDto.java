@@ -1,4 +1,4 @@
-package uz.BTService.btservice.dto;
+package uz.BTService.btservice.controller.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

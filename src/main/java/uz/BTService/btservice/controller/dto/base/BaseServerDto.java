@@ -1,4 +1,4 @@
-package uz.BTService.btservice.dto.base;
+package uz.BTService.btservice.controller.dto.base;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

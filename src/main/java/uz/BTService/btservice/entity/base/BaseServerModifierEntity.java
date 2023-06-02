@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uz.BTService.btservice.constants.EntityStatus;
-import uz.BTService.btservice.dto.base.BaseServerModifierDto;
+import uz.BTService.btservice.controller.dto.base.BaseServerModifierDto;
 
 import java.time.LocalDateTime;
 

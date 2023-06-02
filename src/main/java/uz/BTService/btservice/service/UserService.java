@@ -2,7 +2,6 @@ package uz.BTService.btservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -14,13 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.BTService.btservice.common.util.DateUtil;
 import uz.BTService.btservice.common.util.SecurityUtils;
-import uz.BTService.btservice.dto.UserDto;
-import uz.BTService.btservice.dto.response.FilterForm;
+import uz.BTService.btservice.controller.dto.UserDto;
+import uz.BTService.btservice.controller.dto.dtoUtil.FilterForm;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.interfaces.UserInterface;
 import uz.BTService.btservice.repository.UserRepository;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,30 +68,24 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean updateUser(UserDto userDto) {
-        UserEntity user = userRepository.findByUsername(
-                SecurityUtils.getUsername()).orElseThrow(() ->
-                new UsernameNotFoundException("curren user username not found!")
+    public Boolean updateUser(UserEntity userUpdate) {
+
+        UserEntity userOriginalDB = SecurityUtils.getUser();
+
+        updateUserSave(userUpdate,userOriginalDB);
+
+        return true;
+    }
+
+    @Transactional
+    public Boolean updateUserById(UserEntity userUpdate, Integer id) {
+
+        UserEntity userOriginalDB = userRepository.getUserId(id).orElseThrow(() ->
+                new UsernameNotFoundException("user username not found!")
         );
 
-        log.atInfo().log("!Обновление... пользователя");
-        user.forUpdate();
-        if (!StringUtils.isEmpty(userDto.getFirstname())) user.setFirstname(userDto.getFirstname());
-        if (!StringUtils.isEmpty(userDto.getLastname())) user.setLastname(userDto.getLastname());
-        if (!StringUtils.isEmpty(userDto.getUsername())) user.setUsername(userDto.getUsername());
-        if (!StringUtils.isEmpty(userDto.getPhoneNumber())) user.setPhoneNumber(userDto.getPhoneNumber());
-        if (!StringUtils.isEmpty(userDto.getMiddleName())) user.setMiddleName(userDto.getMiddleName());
-        if (!StringUtils.isEmpty(userDto.getPassword()))
-            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        if (!StringUtils.isEmpty(userDto.getBirtDate())) {
-            try {
-                user.setBirtDate(DateUtils.parseDate(userDto.getBirtDate(), DateUtil.PATTERN3));
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        updateUserSave(userUpdate,userOriginalDB);
 
-        userRepository.save(user);
         return true;
     }
 
@@ -105,8 +97,8 @@ public class UserService {
 
     public List<UserDto> getAdminAll() {
         List<UserDto> userResponseDto = new ArrayList<>();
-        List<UserEntity> listAdmin = userRepository.getAllAdmin();
-        for (UserEntity admin : listAdmin) {
+        List<UserEntity> adminList = userRepository.getAllAdmin();
+        for (UserEntity admin : adminList) {
             UserDto addAdmin = admin.toDto("password", "birtDate");
             addAdmin.setBirtDate(String.valueOf(admin.getBirtDate()));
             userResponseDto.add(addAdmin);
@@ -114,8 +106,32 @@ public class UserService {
         return userResponseDto;
     }
 
-    public UserDto getAdminInformation(Integer id) {
-        return userRepository.getAdminById(id).toDto();
+    public UserEntity getAdminInformation(Integer id) {
+        return userRepository.getAdminById(id);
+    }
+
+    private void updateUserSave(UserEntity userUpdate, UserEntity userOriginalDB){
+        userVerifyAndSetProperty(userUpdate,userOriginalDB);
+
+        log.atInfo().log("user update");
+
+        userOriginalDB.forUpdate(SecurityUtils.getUserId());
+
+        userRepository.save(userOriginalDB);
+    }
+
+    private void userVerifyAndSetProperty(UserEntity userUpdate, UserEntity userOriginalDB){
+        if (!StringUtils.isEmpty(userUpdate.getFirstname())) userOriginalDB.setFirstname(userUpdate.getFirstname());
+        if (!StringUtils.isEmpty(userUpdate.getLastname())) userOriginalDB.setLastname(userUpdate.getLastname());
+        if (!StringUtils.isEmpty(userUpdate.getUsername())) userOriginalDB.setUsername(userUpdate.getUsername());
+        if (!StringUtils.isEmpty(userUpdate.getPhoneNumber())) userOriginalDB.setPhoneNumber(userUpdate.getPhoneNumber());
+        if (!StringUtils.isEmpty(userUpdate.getMiddleName())) userOriginalDB.setMiddleName(userUpdate.getMiddleName());
+        if (!StringUtils.isEmpty(userUpdate.getPassword())) {
+            userOriginalDB.setPassword(passwordEncoder.encode(userUpdate.getPassword()));
+        }
+        if (userUpdate.getBirtDate()!=null) {
+            userOriginalDB.setBirtDate(userUpdate.getBirtDate());
+        }
     }
 
     public Sort orderSortField(String field) {

@@ -1,8 +1,8 @@
-package uz.BTService.btservice.dto;
+package uz.BTService.btservice.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import uz.BTService.btservice.dto.base.BaseServerModifierDto;
+import uz.BTService.btservice.controller.dto.base.BaseServerModifierDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 
 import java.util.List;

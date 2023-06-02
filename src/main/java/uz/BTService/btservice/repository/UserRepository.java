@@ -17,6 +17,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     @Query(value = "SELECT * FROM bts_user du WHERE du.username = :username AND status <> 'DELETED'", nativeQuery = true)
     Optional<UserEntity> findByUsername(@Param("username") String username);
 
+    @Query(value = "SELECT * FROM bts_user du WHERE du.id = :userId AND status <> 'DELETED'", nativeQuery = true)
+    Optional<UserEntity> getUserId(@Param("userId") Integer userId);
+
     @Query(value = "SELECT * FROM bts_user du WHERE du.username = :username OR du.phone_number = :phoneNumber", nativeQuery = true)
     Optional<UserEntity> findByUsernameOriginalDB(@Param("username") String username,@Param("phoneNumber") String phoneNumber);
 

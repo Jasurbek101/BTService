@@ -1,13 +1,11 @@
-package uz.BTService.btservice.dto;
+package uz.BTService.btservice.controller.dto;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
-import uz.BTService.btservice.dto.base.BaseServerModifierDto;
+import uz.BTService.btservice.controller.dto.base.BaseServerModifierDto;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
-
-import java.util.Date;
 
 @Getter
 @Setter

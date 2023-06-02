@@ -1,4 +1,4 @@
-package uz.BTService.btservice.dto.response;
+package uz.BTService.btservice.controller.dto.dtoUtil;
 
 import lombok.Getter;
 import lombok.Setter;

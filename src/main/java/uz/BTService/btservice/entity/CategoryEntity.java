@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.constants.TableNames;
-import uz.BTService.btservice.dto.CategoryDto;
-import uz.BTService.btservice.dto.ProductDto;
+import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 import java.util.ArrayList;

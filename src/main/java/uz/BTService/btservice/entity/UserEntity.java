@@ -1,7 +1,7 @@
 package uz.BTService.btservice.entity;
 
 import uz.BTService.btservice.constants.TableNames;
-import uz.BTService.btservice.dto.UserDto;
+import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import jakarta.persistence.*;
@@ -10,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

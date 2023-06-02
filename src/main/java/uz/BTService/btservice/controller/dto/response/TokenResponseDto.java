@@ -1,12 +1,10 @@
-package uz.BTService.btservice.dto;
+package uz.BTService.btservice.controller.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.BTService.btservice.entity.role.RoleEnum;
-
-import java.util.List;
+import uz.BTService.btservice.controller.dto.UserDto;
 
 @Data
 @Builder

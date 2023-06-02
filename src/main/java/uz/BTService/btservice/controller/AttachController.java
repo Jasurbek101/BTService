@@ -1,7 +1,10 @@
 package uz.BTService.btservice.controller;
 
-import uz.BTService.btservice.dto.AttachDownloadDTO;
-import uz.BTService.btservice.dto.AttachResponseDTO;
+import org.springframework.http.HttpStatus;
+import uz.BTService.btservice.controller.convert.AttachConvert;
+import uz.BTService.btservice.controller.dto.response.AttachDownloadDTO;
+import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
+import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
 import uz.BTService.btservice.service.AttachService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -20,9 +23,15 @@ public class AttachController {
     private final AttachService service;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> upload(@RequestParam MultipartFile file){
-        AttachResponseDTO attach = service.saveToSystem(file);
-        return ResponseEntity.ok().body(attach);
+    public HttpResponse<Object> upload(@RequestParam MultipartFile file){
+
+        HttpResponse<Object> response = new HttpResponse<>(true);
+        AttachResponseDto attach = AttachConvert.from(service.saveAttach(file));
+        return response
+                .code(HttpResponse.Status.OK)
+                .message(HttpStatus.OK.name())
+                .body(attach);
+
     }
 
 
@@ -45,7 +54,7 @@ public class AttachController {
 
     @GetMapping("/get")
     public ResponseEntity<?> getWithPage(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        Page<AttachResponseDTO> result = service.getWithPage(page, size);
+        Page<AttachResponseDto> result = service.getWithPage(page, size);
         return ResponseEntity.ok(result);
     }
 

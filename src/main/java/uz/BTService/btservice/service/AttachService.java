@@ -1,7 +1,8 @@
 package uz.BTService.btservice.service;
 
-import uz.BTService.btservice.dto.AttachDownloadDTO;
-import uz.BTService.btservice.dto.AttachResponseDTO;
+import uz.BTService.btservice.controller.convert.AttachConvert;
+import uz.BTService.btservice.controller.dto.response.AttachDownloadDTO;
+import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
 import uz.BTService.btservice.entity.AttachEntity;
 import uz.BTService.btservice.exceptions.*;
 import uz.BTService.btservice.repository.AttachRepository;
@@ -37,76 +38,14 @@ public class AttachService {
 
     private final AttachRepository repository;
 
-    public AttachResponseDTO saveToSystem(MultipartFile file) {
-        try {
+    public AttachEntity saveAttach(MultipartFile file) {
 
-            System.out.println(file.getContentType());
+        AttachEntity attachEntity = AttachConvert.generateAttachEntity(file.getOriginalFilename(), file.getSize(), file.getContentType());
 
-            String pathFolder = getYmDString(); // 2022/04/23
-            File folder = new File(attachUploadFolder + pathFolder); // attaches/2022/04/23
+        fileSaveToSystem(file, attachEntity.getPath(), attachEntity.getId(), attachEntity.getType());
 
-            if (!folder.exists()) folder.mkdirs();
+        return repository.save(attachEntity);
 
-
-            String fileName = UUID.randomUUID().toString(); // dasdasd-dasdasda-asdasda-asdasd
-            String extension = getExtension(file.getOriginalFilename()); //zari.jpg
-
-            // attaches/2022/04/23/dasdasd-dasdasda-asdasda-asdasd.jpg
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
-            File f = Files.write(path, bytes).toFile();
-
-
-            AttachEntity entity = new AttachEntity();
-            entity.setId(fileName);
-            entity.setOriginName(file.getOriginalFilename());
-            entity.setType(extension);
-            entity.setPath(pathFolder);
-            entity.setSize(file.getSize());
-            entity.setContentType(file.getContentType());
-
-            if (extension.equalsIgnoreCase("mp4")
-
-                    || extension.equalsIgnoreCase("wmv")
-                    || extension.equalsIgnoreCase("avi")
-                    || extension.equalsIgnoreCase("avchd")
-                    || extension.equalsIgnoreCase("flv")
-                    || extension.equalsIgnoreCase("mkv")) {
-
-                MultimediaObject instance = new MultimediaObject(f);
-                MultimediaInfo result = instance.getInfo();
-                entity.setDuration((double) (result.getDuration() / 1000));
-            }
-
-            repository.save(entity);
-
-
-            AttachResponseDTO dto = new AttachResponseDTO();
-            dto.setId(entity.getId());
-            dto.setOriginalName(file.getOriginalFilename());
-            dto.setDuration(entity.getDuration());
-            dto.setPath(path.toString());
-            dto.setExtension(extension);
-            dto.setSize(file.getSize());
-            dto.setCreatedData(entity.getCreatedDate());
-            dto.setUrl(attachDownloadUrl + fileName + "." + extension);
-            return dto;
-
-        } catch (IOException e) {
-            throw new FileUploadException("File could not upload");
-        } catch (EncoderException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    private AttachEntity getAttach(String fileName) {
-        String id = fileName.split("\\.")[0];
-        Optional<AttachEntity> optional = repository.findById(id);
-        if (optional.isEmpty()) {
-            throw new FileNotFoundException("File Not Found");
-        }
-        return optional.get();
     }
 
     public byte[] open(String fileName) {
@@ -143,64 +82,75 @@ public class AttachService {
         }
     }
 
-    public Page<AttachResponseDTO> getWithPage(Integer page, Integer size) {
+    public Page<AttachResponseDto> getWithPage(Integer page, Integer size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdDate");
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<AttachEntity> pageObj = repository.findAll(pageable);
 
         List<AttachEntity> entityList = pageObj.getContent();
-        List<AttachResponseDTO> dtoList = new ArrayList<>();
-
-
-        for (AttachEntity entity : entityList) {
-
-            AttachResponseDTO dto = new AttachResponseDTO();
-            dto.setId(entity.getId());
-            dto.setPath(entity.getPath());
-            dto.setExtension(entity.getType());
-            dto.setUrl(attachDownloadUrl + "/" + entity.getId() + "." + entity.getType());
-            dto.setOriginalName(entity.getOriginName());
-            dto.setSize(entity.getSize());
-            dto.setCreatedData(entity.getCreatedDate());
-            dtoList.add(dto);
-        }
+        List<AttachResponseDto> dtoList = AttachConvert.from(entityList);
 
         return new PageImpl<>(dtoList, pageable, pageObj.getTotalElements());
-    }
-
-    public String getYmDString() {
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
-        int day = Calendar.getInstance().get(Calendar.DATE);
-
-        return year + "/" + month + "/" + day; // 2022/04/23
-    }
-
-    public String getExtension(String fileName) {
-        // mp3/jpg/npg/mp4.....
-        if (fileName == null) {
-            throw new OriginalFileNameNullException("File name null");
-        }
-        int lastIndex = fileName.lastIndexOf(".");
-        return fileName.substring(lastIndex + 1);
     }
 
     public String deleteById(String fileName) {
         try {
             AttachEntity entity = getAttach(fileName);
-            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName+"."+entity.getType());
+            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName + "." + entity.getType());
 
             Files.delete(file);
             repository.delete(entity);
 
             return "deleted";
-        } catch (
-                IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private AttachEntity getAttach(String fileName) {
+        String id = fileName.split("\\.")[0];
+        Optional<AttachEntity> optional = repository.findById(id);
+        if (optional.isEmpty()) {
+            throw new FileNotFoundException("File Not Found");
+        }
+        return optional.get();
+    }
+
+    private void fileSaveToSystem(MultipartFile file, String pathFolder, String fileName, String extension) {
+
+        try {
+
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(attachUploadFolder + pathFolder + "/" + fileName + "." + extension);
+            File newFile = Files.write(path, bytes).toFile();
+            contentCheck(extension, newFile);
+
+        } catch (IOException e) {
+            throw new FileUploadException("File could not upload");
         }
 
     }
+
+    private void contentCheck(String extension, File newFile) {
+        try {
+
+            if (extension.equalsIgnoreCase("mp4")
+
+                    || extension.equalsIgnoreCase("wmv")
+                    || extension.equalsIgnoreCase("avi")
+                    || extension.equalsIgnoreCase("avchd")
+                    || extension.equalsIgnoreCase("flv")
+                    || extension.equalsIgnoreCase("mkv")) {
+
+                MultimediaObject instance = new MultimediaObject(newFile);
+                MultimediaInfo result = instance.getInfo();
+            }
+        } catch (EncoderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
 

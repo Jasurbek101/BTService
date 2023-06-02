@@ -1,11 +1,8 @@
-package uz.BTService.btservice.dto;
+package uz.BTService.btservice.controller.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
 import lombok.*;
-import uz.BTService.btservice.dto.base.BaseServerModifierDto;
-import uz.BTService.btservice.entity.AttachEntity;
-import uz.BTService.btservice.entity.CategoryEntity;
+import uz.BTService.btservice.controller.dto.CategoryDto;
+import uz.BTService.btservice.controller.dto.base.BaseServerModifierDto;
 import uz.BTService.btservice.entity.ProductEntity;
 
 import java.util.List;
@@ -14,7 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDto  extends BaseServerModifierDto {
+public class ProductResponseForAdminDto extends BaseServerModifierDto {
+
     private String name;
 
     private Double price;
@@ -26,7 +24,7 @@ public class ProductDto  extends BaseServerModifierDto {
     private CategoryDto category;
 
     private List<String> attachId;
-    private List<AttachResponseDTO> attach;
+    private List<AttachResponseDto> attach;
 
     private String description;
 
