@@ -22,6 +22,15 @@ public class ProductConvert {
         return product;
     }
 
+    public ProductResponseForAdminDto fromForAdmin(ProductEntity product){
+        ProductResponseForAdminDto productResponseForAdminDto = product.toDto("attach");
+        List<AttachResponseDto> AttachDto = AttachConvert.from(product.getAttach());
+        CategoryDto categoryDto = CategoryConvert.from(product.getCategory());
+        productResponseForAdminDto.setAttach(AttachDto);
+        productResponseForAdminDto.setCategory(categoryDto);
+        return productResponseForAdminDto;
+    }
+
     public ProductResponseForUserDto from(ProductEntity product){
 
         return ProductResponseForUserDto
@@ -33,15 +42,6 @@ public class ProductConvert {
                 .color(product.getColor())
                 .attach(AttachConvert.from(product.getAttach()))
                 .build();
-    }
-
-    public ProductResponseForAdminDto fromForAdmin(ProductEntity product){
-        ProductResponseForAdminDto productResponseForAdminDto = product.toDto("attach");
-        List<AttachResponseDto> AttachDto = AttachConvert.from(product.getAttach());
-        CategoryDto categoryDto = CategoryConvert.from(product.getCategory());
-        productResponseForAdminDto.setAttach(AttachDto);
-        productResponseForAdminDto.setCategory(categoryDto);
-        return productResponseForAdminDto;
     }
 
     public List<ProductResponseForAdminDto> fromForAdmin(List<ProductEntity> productEntityList){

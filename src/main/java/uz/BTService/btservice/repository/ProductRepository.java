@@ -38,13 +38,13 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     @Query(value = "SELECT btsp.* FROM bts_product btsp\n" +
             "            INNER JOIN bts_category btsc ON btsp.category_id = btsc.id\n" +
-            "                WHERE btsp.name ILIKE ANY (ARRAY [:categoryNameList])\n" +
+            "                WHERE btsp.name ILIKE ANY (ARRAY [:productName])\n" +
             "                   AND btsp.status<>'DELETED'\n" +
             "                   AND btsc.status<>'DELETED'\n" +
             "                 ORDER BY CASE WHEN\n" +
-            "                  btsp.name = ANY (ARRAY [:categoryNameList])\n" +
+            "                  btsp.name = ANY (ARRAY [:productName])\n" +
             "                   THEN 0 ELSE 1 END, btsp.name", nativeQuery = true)
-    List<ProductEntity> getProductNameListSearch(@Param("categoryNameList") String[] categoryNameList);
+    List<ProductEntity> getProductNameListSearch(@Param("productName") String[] categoryNameList);
 
     @Modifying
     @Query(value = "UPDATE bts_product SET status = 'DELETED' WHERE id = :productId", nativeQuery = true)
