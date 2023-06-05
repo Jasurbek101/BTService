@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.BTService.btservice.constants.TableNames;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = TableNames.BTS_BANNER)
 public class BannerEntity {
 
 
@@ -30,8 +32,5 @@ public class BannerEntity {
     @JoinColumn(name = "attach_id", insertable = false, updatable = false)
     private AttachEntity attach;
 
-//    public UserDto toDto(String... ignoreProperties){
-//        return toDto(this, new BannerDto(), ignoreProperties);
-//    }
 
 }

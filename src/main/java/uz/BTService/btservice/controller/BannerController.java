@@ -6,18 +6,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.BannerConvert;
 import uz.BTService.btservice.controller.convert.ProductConvert;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
 import uz.BTService.btservice.controller.dto.request.BannerCreateRequestDto;
 import uz.BTService.btservice.controller.dto.request.ProductCreateRequestDto;
+import uz.BTService.btservice.controller.dto.response.BannerResponseDto;
+import uz.BTService.btservice.controller.dto.response.ProductResponseForUserDto;
 import uz.BTService.btservice.entity.BannerEntity;
 import uz.BTService.btservice.entity.ProductEntity;
 import uz.BTService.btservice.service.BannerService;
+
+import java.util.List;
 
 
 @RestController
@@ -39,14 +40,43 @@ public class BannerController {
         BannerEntity bannerEntity = BannerConvert.convertToEntity(bannerCreateRequestDto);
         boolean save = bannerService.saveBanner(bannerEntity);
 
-//        ProductEntity product = ProductConvert.convertToEntity(productDto);
-//        boolean isSave = productService.addProduct(product, responses);
+        return response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(save)
+                .message(HttpResponse.Status.OK.name());
+    }
+
+
+    @Operation(summary = "This method for GetId", description = "This method Banner GetId")
+    @GetMapping("/get/all")
+    public HttpResponse<Object> getBannerAll() {
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        List<BannerEntity> banner = bannerService.getByAll();
+        List<BannerResponseDto> bannerResponseDtoList = BannerConvert.from(banner);
+        return response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(bannerResponseDtoList)
+                .message(HttpResponse.Status.OK.name());
+
+    }
+
+    @Operation(summary = "This method for GetId", description = "This method Banner GetId")
+    @GetMapping("/get/{id}")
+    public HttpResponse<Object> getBannerId(@PathVariable Integer id) {
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        BannerEntity banner = bannerService.getById(id);
+        BannerResponseDto bannerResponseDto = BannerConvert.from(banner);
 
         return response
                 .code(HttpResponse.Status.OK)
                 .success(true)
-                .body(null)
+                .body(bannerResponseDto)
                 .message(HttpResponse.Status.OK.name());
 
     }
+
 }
