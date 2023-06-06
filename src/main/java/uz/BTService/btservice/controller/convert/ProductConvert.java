@@ -25,7 +25,7 @@ public class ProductConvert {
     public ProductResponseForAdminDto fromForAdmin(ProductEntity product){
         ProductResponseForAdminDto productResponseForAdminDto = product.toDto("attach");
         List<AttachResponseDto> AttachDto = AttachConvert.from(product.getAttach());
-        CategoryDto categoryDto = CategoryConvert.from(product.getCategory());
+        CategoryDto categoryDto = CategoryConvert.fromNoTree(product.getCategory());
         productResponseForAdminDto.setAttach(AttachDto);
         productResponseForAdminDto.setCategory(categoryDto);
         return productResponseForAdminDto;
