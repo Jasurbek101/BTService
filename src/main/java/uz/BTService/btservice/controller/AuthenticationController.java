@@ -12,6 +12,7 @@ import uz.BTService.btservice.controller.dto.request.LoginRequestDto;
 import uz.BTService.btservice.controller.dto.response.TokenResponseDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
 import uz.BTService.btservice.controller.dto.request.UserCreateRequestDto;
+import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import uz.BTService.btservice.service.AuthenticationService;
 
