@@ -20,7 +20,11 @@ public class RegionConvert {
 }
 
     public RegionDto fromTree(RegionEntity region){
-        return region.getDto(true);
+
+        RegionDto regionDto = region.toDto("children");
+        regionDto.setChildren(fromTree(region.getChildren()));
+
+        return regionDto;
     }
 
     public RegionDto fromNoTree(RegionEntity region){
@@ -29,5 +33,9 @@ public class RegionConvert {
 
     public List<RegionDto> fromNoTree(List<RegionEntity> regionEntityList){
         return regionEntityList.stream().map(RegionConvert::fromNoTree).toList();
+    }
+
+    public List<RegionDto> fromTree(List<RegionEntity> regionEntityList){
+        return regionEntityList.stream().map(RegionConvert::fromTree).toList();
     }
 }

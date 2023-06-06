@@ -99,6 +99,24 @@ public class RegionController {
         return response;
     }
 
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "This method for getAll", description = "This method user getAll")
+    @GetMapping("/get/all-tree")
+    public HttpResponse<Object> getAllTreeRegion() {
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        List<RegionEntity> allRegionTree = regionService.getRegionAllTree();
+        List<RegionDto> regionTreeList = RegionConvert.fromTree(allRegionTree);
+        response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(regionTreeList)
+                .message(HttpResponse.Status.OK.name());
+
+
+        return response;
+    }
+
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "This method for Put", description = "This method user update")

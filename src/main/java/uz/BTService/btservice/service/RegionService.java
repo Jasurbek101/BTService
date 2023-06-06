@@ -1,5 +1,6 @@
 package uz.BTService.btservice.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.BTService.btservice.common.util.SecurityUtils;
@@ -15,12 +16,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RegionService {
 
     private final RegionRepository regionRepository;
-    public RegionService(RegionRepository regionRepository) {
-        this.regionRepository = regionRepository;
-    }
 
     public RegionEntity addRegion(RegionEntity regionEntity) {
         Integer userId = SecurityUtils.getUserId();
@@ -74,6 +73,10 @@ public class RegionService {
 
     public List<RegionEntity> getAllRegion() {
         return regionRepository.findAllRegion();
+    }
+
+    public List<RegionEntity> getRegionAllTree(){
+        return regionRepository.getRegionAllTree();
     }
 
     public RegionEntity updateRegion(RegionEntity region) {
