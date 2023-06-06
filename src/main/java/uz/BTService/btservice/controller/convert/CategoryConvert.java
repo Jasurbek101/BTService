@@ -13,20 +13,22 @@ public class CategoryConvert {
         return categoryDto.toEntity();
     }
 
-    public CategoryDto from(CategoryEntity category){
-        return category.toDto();
-    }
-
     public CategoryDto fromTree(CategoryEntity category){
-        return category.getDto(true);
+        if(category.getChildren()!=null){
+            for (CategoryEntity cat: category.getChildren()) {
+                fromTree(cat);
+            }
+        }
+        return category.toDto();
     }
 
     public CategoryDto fromNoTree(CategoryEntity category){
         return category.getDto(false);
     }
 
-    public List<CategoryDto> from(List<CategoryEntity> categoryList){
-        return categoryList.stream().map(CategoryConvert::from).toList();
+
+    public List<CategoryDto> fromTree(List<CategoryEntity> categoryList){
+        return categoryList.stream().map(CategoryConvert::fromTree).toList();
     }
 
     public List<CategoryDto> fromNoTree(List<CategoryEntity> categoryList){

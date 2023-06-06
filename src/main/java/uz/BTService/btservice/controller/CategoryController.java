@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uz.BTService.btservice.constants.CategoryType;
 import uz.BTService.btservice.controller.convert.CategoryConvert;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
@@ -31,7 +32,7 @@ public class CategoryController {
             response
                     .code(HttpResponse.Status.OK)
                     .success(true)
-                    .body(CategoryConvert.from(category))
+                    .body(CategoryConvert.fromTree(category))
                     .message(HttpResponse.Status.OK.name());
         } catch (Exception e) {
             response
@@ -53,7 +54,7 @@ public class CategoryController {
         if (category != null) {response
                 .code(HttpResponse.Status.OK)
                 .success(true)
-                .body(CategoryConvert.fromTree(category))
+                .body(category)
                 .message(HttpResponse.Status.OK.name());
         } else {
             response
@@ -88,10 +89,29 @@ public class CategoryController {
     public HttpResponse<Object> getAllCategory() {
         HttpResponse<Object> response = HttpResponse.build(false);
         List<CategoryEntity> allCategory = categoryService.getAllCategory();
+        List<CategoryDto> categoryNoTreeList = CategoryConvert.fromNoTree(allCategory);
         response
                 .code(HttpResponse.Status.OK)
                 .success(true)
-                .body(CategoryConvert.fromNoTree(allCategory))
+                .body(categoryNoTreeList)
+                .message(HttpResponse.Status.OK.name());
+
+
+        return response;
+    }
+
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "This method for getAll", description = "This method user getAll")
+    @GetMapping("/get/all-tree")
+    public HttpResponse<Object> getAllTreeCategory() {
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        List<CategoryEntity> allCategoryTree = categoryService.getAllTreeCategory();
+        List<CategoryDto> categoryTreeList = CategoryConvert.fromTree(allCategoryTree);
+        response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(categoryTreeList)
                 .message(HttpResponse.Status.OK.name());
 
 
@@ -128,6 +148,20 @@ public class CategoryController {
         return response.code(HttpResponse.Status.OK)
                 .success(true)
                 .body(isDelete)
+                .message(HttpResponse.Status.OK.name());
+
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @Operation(summary = "This method for Delete", description = "This method user delete")
+    @GetMapping("/category-type")
+    public HttpResponse<Object> getByCategoryType() {
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        return response.code(HttpResponse.Status.OK)
+                .success(true)
+                .body(CategoryType.values())
                 .message(HttpResponse.Status.OK.name());
 
     }

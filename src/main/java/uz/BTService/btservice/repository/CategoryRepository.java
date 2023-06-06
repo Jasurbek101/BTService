@@ -33,4 +33,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Intege
 
     @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE (btsc.id=:parentId OR btsc.id=:childId) AND btsc.status <> 'DELETED'", nativeQuery = true)
     List<CategoryEntity> getCategoryIdParentAndChild(@Param("parentId") Integer parentId, @Param("childId") Integer childId);
+
+    @Query(value = "SELECT btsc.* FROM bts_category btsc WHERE btsc.parent_id IS NULL", nativeQuery = true)
+    List<CategoryEntity> getCategoryTree();
 }

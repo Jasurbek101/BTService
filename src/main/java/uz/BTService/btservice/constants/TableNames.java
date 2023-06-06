@@ -5,6 +5,7 @@ public interface TableNames {
     String CATEGORY = "bts_category";
     String PRODUCT = "bts_product";
     String ATTACH = "bts_attach";
+    String TECHNICAL_SERVICE = "bts_technical_service";
     String BTS_BANNER = "bts_banner";
     String REGION = "bts_region";
 }

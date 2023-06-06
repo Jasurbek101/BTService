@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
-
     @Query(value = "SELECT p FROM ProductEntity p INNER JOIN CategoryEntity c ON p.id=:productId AND c.id=p.category AND p.status <> 'DELETED' AND c.status <> 'DELETED'")
     Optional<ProductEntity> findByProductId(@Param("productId") Integer productId);
 
@@ -48,5 +47,4 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     @Modifying
     @Query(value = "UPDATE bts_product SET status = 'DELETED' WHERE id = :productId", nativeQuery = true)
-    Integer productDeleted(@Param("productId") Integer productId);
-}
+    Integer productDeleted(@Param("productId") Integer productId);}

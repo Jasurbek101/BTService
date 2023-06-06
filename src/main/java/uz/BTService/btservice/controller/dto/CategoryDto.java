@@ -2,6 +2,7 @@ package uz.BTService.btservice.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import uz.BTService.btservice.constants.CategoryType;
 import uz.BTService.btservice.controller.dto.base.BaseServerModifierDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 
@@ -17,6 +18,8 @@ public class CategoryDto extends BaseServerModifierDto {
     private String name;
 
     private Integer parentId;
+
+    private CategoryType type;
 
     private List<CategoryDto> children;
 

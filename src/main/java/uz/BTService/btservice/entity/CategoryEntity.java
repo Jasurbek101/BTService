@@ -3,6 +3,7 @@ package uz.BTService.btservice.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import uz.BTService.btservice.constants.CategoryType;
 import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.CategoryDto;
@@ -23,6 +24,9 @@ public class CategoryEntity extends BaseServerModifierEntity {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    private CategoryType type;
 
     @Column(name = "parentId")
     private Integer parentId;
