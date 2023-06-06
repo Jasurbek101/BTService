@@ -57,6 +57,10 @@ public class CategoryService {
         return true;
     }
 
+    public List<CategoryEntity> getAllTreeCategory() {
+        return categoryRepository.getCategoryTree();
+    }
+
     public CategoryEntity updateCategory(CategoryEntity category) {
 
         CategoryEntity entity = childIdAndParentIdVerify(category);
@@ -132,4 +136,6 @@ public class CategoryService {
         }
         return entity;
     }
+
+
 }

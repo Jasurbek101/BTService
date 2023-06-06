@@ -28,6 +28,7 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/api/v1/category/get/**",
             "/api/v1/product/get/**",
+            "/api/v1/technical-service/get/**",
             "/attach/**"
     };
 
