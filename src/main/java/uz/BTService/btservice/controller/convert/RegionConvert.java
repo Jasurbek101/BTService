@@ -1,6 +1,7 @@
 package uz.BTService.btservice.controller.convert;
 
 import lombok.experimental.UtilityClass;
+import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.controller.dto.RegionDto;
 import uz.BTService.btservice.entity.CategoryEntity;
@@ -28,7 +29,7 @@ public class RegionConvert {
     }
 
     public RegionDto fromNoTree(RegionEntity region){
-        return region.getDto(false);
+        return region.toDto("children");
     }
 
     public List<RegionDto> fromNoTree(List<RegionEntity> regionEntityList){
@@ -36,6 +37,7 @@ public class RegionConvert {
     }
 
     public List<RegionDto> fromTree(List<RegionEntity> regionEntityList){
-        return regionEntityList.stream().map(RegionConvert::fromTree).toList();
+        return regionEntityList.stream().map(RegionConvert::fromTree)
+                .filter(p -> p.getStatus() != EntityStatus.DELETED).toList();
     }
 }

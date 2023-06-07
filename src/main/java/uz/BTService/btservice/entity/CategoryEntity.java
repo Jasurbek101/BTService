@@ -15,9 +15,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = TableNames.CATEGORY)
 public class CategoryEntity extends BaseServerModifierEntity {

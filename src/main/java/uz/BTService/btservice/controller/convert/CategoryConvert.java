@@ -1,6 +1,7 @@
 package uz.BTService.btservice.controller.convert;
 
 import lombok.experimental.UtilityClass;
+import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 
@@ -23,7 +24,7 @@ public class CategoryConvert {
     }
 
     public CategoryDto fromNoTree(CategoryEntity category){
-        return category.getDto(false);
+        return category.toDto("children");
     }
 
 
@@ -32,7 +33,8 @@ public class CategoryConvert {
     }
 
     public List<CategoryDto> fromNoTree(List<CategoryEntity> categoryList){
-        return categoryList.stream().map(CategoryConvert::fromNoTree).toList();
+        return categoryList.stream().map(CategoryConvert::fromNoTree)
+                .filter(p -> p.getStatus() != EntityStatus.DELETED).toList();
     }
 
 }

@@ -40,5 +40,6 @@ public interface RegionRepository extends JpaRepository<RegionEntity,Integer> {
     void regionDelete(@Param("regionId") Integer regionId);
 
 
-
+    @Query(value = "SELECT btsr.* FROM bts_region btsr WHERE btsr.id = :regionId AND btsr.status <> 'DELETED'", nativeQuery = true)
+    Optional<RegionEntity> getRegionId(@Param("regionId") Integer regionId);
 }

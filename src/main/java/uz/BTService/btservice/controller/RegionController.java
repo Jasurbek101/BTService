@@ -75,11 +75,12 @@ public class RegionController {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         RegionEntity region = regionService.getRegionId(id);
+        RegionDto responseRegionDto = RegionConvert.fromNoTree(region);
 
         return response
                 .code(HttpResponse.Status.OK)
                 .success(true)
-                .body(RegionConvert.fromNoTree(region))
+                .body(responseRegionDto)
                 .message(HttpResponse.Status.OK.name());
     }
 

@@ -24,8 +24,8 @@ public class RegionService {
     public RegionEntity addRegion(RegionEntity regionEntity) {
         Integer userId = SecurityUtils.getUserId();
         Optional<RegionEntity> byCreatedByName = regionRepository.findByCreatedByName(regionEntity.getName());
-        if (byCreatedByName.isPresent()){
-            return regionStatusCheckAndSave(byCreatedByName,regionEntity,userId);
+        if (byCreatedByName.isPresent()) {
+            return regionStatusCheckAndSave(byCreatedByName, regionEntity, userId);
         }
         regionEntity.forCreate(userId);
         return regionRepository.save(regionEntity);
@@ -56,18 +56,21 @@ public class RegionService {
 
     public RegionEntity getRegionIdTree(Integer regionId) {
         if (regionId == null) return null;
+
         return regionRepository.findById(regionId).orElseThrow(
-        () -> {
-            throw new RegionNotFoundException(regionId + "-id not found");
-        }
+                () -> {
+                    throw new RegionNotFoundException(regionId + "-id not found");
+                }
         );
     }
 
     public RegionEntity getRegionId(Integer regionId) {
         if (regionId == null) return null;
 
-        return regionRepository.findById(regionId).orElseThrow(
-                () -> {throw new RegionNotFoundException(regionId + "-id not found!!!");}
+        return regionRepository.getRegionId(regionId).orElseThrow(
+                () -> {
+                    throw new RegionNotFoundException(regionId + "-id not found!!!");
+                }
         );
     }
 
@@ -75,7 +78,7 @@ public class RegionService {
         return regionRepository.findAllRegion();
     }
 
-    public List<RegionEntity> getRegionAllTree(){
+    public List<RegionEntity> getRegionAllTree() {
         return regionRepository.getRegionAllTree();
     }
 
@@ -109,7 +112,7 @@ public class RegionService {
         RegionEntity entity = null;
         List<RegionEntity> parentAndChild = regionRepository.getRegionIdParentAndChild(region.getId(), region.getParentId());
 
-        if(parentAndChild.size()==2){
+        if (parentAndChild.size() == 2) {
             for (RegionEntity regionDB : parentAndChild) {
 
                 if (Objects.equals(regionDB.getId(), region.getId())) {
