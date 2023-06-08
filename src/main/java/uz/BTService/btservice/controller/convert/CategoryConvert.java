@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.entity.CategoryEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @UtilityClass
@@ -13,20 +14,21 @@ public class CategoryConvert {
         return categoryDto.toEntity();
     }
 
-    public CategoryDto from(CategoryEntity category){
-        return category.toDto();
-    }
-
     public CategoryDto fromTree(CategoryEntity category){
-        return category.getDto(true);
+
+        CategoryDto dto = category.toDto("children");
+        dto.setChildren(fromTree(category.getChildren()));
+
+        return dto;
     }
 
     public CategoryDto fromNoTree(CategoryEntity category){
         return category.getDto(false);
     }
 
-    public List<CategoryDto> from(List<CategoryEntity> categoryList){
-        return categoryList.stream().map(CategoryConvert::from).toList();
+
+    public List<CategoryDto> fromTree(List<CategoryEntity> categoryList){
+        return categoryList.stream().map(CategoryConvert::fromTree).toList();
     }
 
     public List<CategoryDto> fromNoTree(List<CategoryEntity> categoryList){

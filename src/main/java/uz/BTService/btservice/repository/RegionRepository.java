@@ -26,6 +26,9 @@ public interface RegionRepository extends JpaRepository<RegionEntity,Integer> {
     @Query(value = "SELECT btsr.* FROM bts_region btsr WHERE (btsr.id=:parentId OR btsr.id=:childId) AND btsr.status <> 'DELETED'", nativeQuery = true)
     List<RegionEntity> getRegionIdParentAndChild(@Param("parentId") Integer parentId, @Param("childId") Integer childId);
 
+    @Query(value = "SELECT btsr.* FROM bts_region btsr WHERE btsr.parent_id IS NULL AND btsr.status <> 'DELETED'", nativeQuery = true)
+    List<RegionEntity> getRegionAllTree();
+
     @Modifying
     @Query(value = "WITH RECURSIVE sub_region AS (\n" +
             "        SELECT * FROM bts_region WHERE id = :regionId\n" +
@@ -35,4 +38,7 @@ public interface RegionRepository extends JpaRepository<RegionEntity,Integer> {
             "        sub_region parent ON parent.id=child.parent_id\n" +
             ")UPDATE bts_region SET status = 'DELETED' WHERE id IN(SELECT id FROM sub_region)", nativeQuery = true)
     void regionDelete(@Param("regionId") Integer regionId);
+
+
+
 }
