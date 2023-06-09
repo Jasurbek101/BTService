@@ -8,4 +8,5 @@ public interface TableNames {
     String TECHNICAL_SERVICE = "bts_technical_service";
     String BTS_BANNER = "bts_banner";
     String REGION = "bts_region";
+    String ORDER_TECHNICAL_SERVICE = "bts_order_technical_service";
 }
