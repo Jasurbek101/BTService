@@ -29,42 +29,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final Logger log = LoggerFactory.getLogger(getClass().getName());
 
-    public List<UserDto> getUserAll() {
-        List<UserDto> userResponseDto = new ArrayList<>();
-        List<UserInterface> listUserInterfaces = userRepository.getAllUserInterface();
-        log.atInfo().log("!Получение... Все пользователи");
-
-        for (UserInterface uInterface : listUserInterfaces) {
-            UserDto dto = new UserDto();
-            dto.setId(uInterface.getId());
-            dto.setFirstname(uInterface.getFirstname());
-            dto.setLastname(uInterface.getLastname());
-            dto.setMiddleName(uInterface.getMiddle_name());
-            dto.setBirtDate(DateUtil.format(uInterface.getBirth_date(), DateUtil.PATTERN3));
-            dto.setPhoneNumber(uInterface.getPhone_number());
-            dto.setUsername(uInterface.getUsername());
-            dto.setRoleEnum(uInterface.getRole());
-            dto.setStatus(uInterface.getStatus());
-            userResponseDto.add(dto);
-        }
-        return userResponseDto;
+    public List<UserInterface> getUserAll() {
+      return userRepository.getAllUserInterface();
     }
 
 
-    public UserDto getUserInformation(Integer id) {
-        UserEntity userInformation = userRepository.getUserInformation(id);
-//        log.atInfo().log("!Получение... Информация о пользователе по ИД");
-//        CitizenInterface regionAndNeighborhood = regionRepository.getRegionAndNeighborhood(userInformation.getRegionId());
-        UserDto responseInformationUser = userInformation.toDto();
-//        responseInformationUser.setBirtDate(userInformation.getBirtDate()==null ? null :userInformation.getBirtDate().toString());
-//        responseInformationUser.setNeighborhoodName(regionAndNeighborhood.getNeighborhood_name());
-//        responseInformationUser.setRegionName(regionAndNeighborhood.getRegion_name());
-//        UserScoreDto responseUserScore = new UserScoreDto();
-//        responseUserScore.setUserScoreDay(userRepository.getUserScoreToday(id));
-//        responseUserScore.setUserScoreMonth(userRepository.getUserScoreMonth(id));
-//        responseInformationUser.setUserScore(responseUserScore);
-
-        return responseInformationUser;
+    public UserEntity getUserInformation(Integer id) {
+        return userRepository.getUserInformation(id);
     }
 
     @Transactional
@@ -95,15 +66,10 @@ public class UserService {
         return userDeleteIsSuccess > 0;
     }
 
-    public List<UserDto> getAdminAll() {
-        List<UserDto> userResponseDto = new ArrayList<>();
-        List<UserEntity> adminList = userRepository.getAllAdmin();
-        for (UserEntity admin : adminList) {
-            UserDto addAdmin = admin.toDto("password", "birtDate");
-            addAdmin.setBirtDate(String.valueOf(admin.getBirtDate()));
-            userResponseDto.add(addAdmin);
-        }
-        return userResponseDto;
+    public List<UserEntity> getAdminAll() {
+
+       return userRepository.getAllAdmin();
+
     }
 
     public UserEntity getAdminInformation(Integer id) {

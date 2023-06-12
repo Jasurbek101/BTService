@@ -7,10 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uz.BTService.btservice.controller.convert.UserConvert;
 import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
 import uz.BTService.btservice.controller.dto.request.UserUpdateRequestDto;
 import uz.BTService.btservice.entity.UserEntity;
+import uz.BTService.btservice.interfaces.UserInterface;
 import uz.BTService.btservice.service.UserService;
 
 import java.util.List;
@@ -28,15 +30,16 @@ public class UserController {
     @Operation(summary = "This method for get", description = "To get all users for admin")
     @GetMapping("/list")
     public HttpResponse<Object> getUserList() {
-        HttpResponse<Object> response = HttpResponse.build(false);
+        HttpResponse<Object> response = HttpResponse.build(true);
 
-            List<UserDto> userList = userService.getUserAll();
-            if (userList == null || userList.isEmpty())
-                response.code(HttpResponse.Status.NOT_FOUND).message("Not found any user!!!");
-            else
-                response.code(HttpResponse.Status.OK).success(true).body(userList).message(HttpResponse.Status.OK.name());
+        List<UserInterface> userAll = userService.getUserAll();
+        List<UserDto> userDtoList = UserConvert.from(userAll);
 
-        return response;
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(userDtoList)
+                .message(HttpResponse.Status.OK.name());
+
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
@@ -44,13 +47,15 @@ public class UserController {
     @Operation(summary = "This method for get", description = "This method is used to get how many points the admin user has scored")
     @GetMapping(value = "/info/{id}")
     public HttpResponse<Object> getUserInformation(@PathVariable Integer id) {
-        HttpResponse<Object> response = HttpResponse.build(false);
+        HttpResponse<Object> response = HttpResponse.build(true);
 
-            UserDto userDto = userService.getUserInformation(id);
-            return response
-                    .code(HttpResponse.Status.OK)
-                    .success(true).body(userDto)
-                    .message(HttpResponse.Status.OK.name());
+        UserEntity userEntity = userService.getUserInformation(id);
+        UserDto userDto = UserConvert.from(userEntity);
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(userDto)
+                .message(HttpResponse.Status.OK.name());
 
     }
 
@@ -60,35 +65,33 @@ public class UserController {
     public HttpResponse<Object> userUpdate(@RequestBody UserUpdateRequestDto userUpdate) {
         HttpResponse<Object> response = new HttpResponse<>(true);
 
-            UserEntity updateUser = userUpdate.toEntity();
-            Boolean isUpdateUser = userService.updateUser(updateUser);
+        UserEntity updateUser = userUpdate.toEntity();
+        Boolean isUpdateUser = userService.updateUser(updateUser);
 
-                return response
-                        .code(HttpResponse.Status.OK)
-                        .body(isUpdateUser)
-                        .success(true)
-                        .message(HttpStatus.OK.name());
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(isUpdateUser)
+                .message(HttpStatus.OK.name());
 
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @Operation(summary = "This method for update by id", description = "This method updates the user's data")
-    @PutMapping ("/update/{id}")
+    @PutMapping("/update/{id}")
     public HttpResponse<Object> userUpdateId(
             @PathVariable Integer id,
             @RequestBody UserUpdateRequestDto userUpdate) {
 
         HttpResponse<Object> response = new HttpResponse<>(true);
 
-            UserEntity updateUser = userUpdate.toEntity();
-            Boolean isUpdateUser = userService.updateUserById(updateUser,id);
+        UserEntity updateUser = userUpdate.toEntity();
+        Boolean isUpdateUser = userService.updateUserById(updateUser, id);
 
-            return response
-                    .code(HttpResponse.Status.OK)
-                    .body(isUpdateUser)
-                    .success(true)
-                    .message(HttpStatus.OK.name());
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(isUpdateUser)
+                .message(HttpStatus.OK.name());
 
     }
 
@@ -100,14 +103,15 @@ public class UserController {
 
         HttpResponse<Object> response = new HttpResponse<>(false);
 
-        try {
+
             if (Boolean.TRUE.equals(userService.userDelete(id))) {
-                return response.code(HttpResponse.Status.OK).success(true).body(Boolean.TRUE).message("User deleted successfully");
+                return response
+                        .code(HttpResponse.Status.OK)
+                        .success(true)
+                        .body(Boolean.TRUE)
+                        .message("User deleted successfully");
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            response.code(HttpResponse.Status.INTERNAL_SERVER_ERROR).success(false).message(ex.getMessage());
-        }
+
         return response;
     }
 

@@ -4,6 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import uz.BTService.btservice.controller.dto.base.BaseUserDto;
 import uz.BTService.btservice.entity.UserEntity;
+import uz.BTService.btservice.entity.role.PermissionEnum;
+import uz.BTService.btservice.entity.role.RoleEnum;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +29,7 @@ public class UserCreateRequestDto extends BaseUserDto {
 
     @NotBlank(message = "password must not be null!!!")
     private String password;
+
 
     public UserEntity toEntity(String... ignoreProperties) {
         return super.toEntity(this, new UserEntity(), ignoreProperties);

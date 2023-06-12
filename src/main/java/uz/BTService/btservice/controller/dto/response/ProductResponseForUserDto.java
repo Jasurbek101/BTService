@@ -11,6 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProductResponseForUserDto{
+
+    private Integer id;
+
     private String name;
 
     private Double price;

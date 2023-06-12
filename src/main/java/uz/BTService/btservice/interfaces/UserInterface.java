@@ -4,6 +4,7 @@ import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.entity.role.RoleEnum;
 
 import java.util.Date;
+import java.util.List;
 
 public interface UserInterface {
     Integer getId();
@@ -30,7 +31,7 @@ public interface UserInterface {
 
     String getPhone_number();
 
-    RoleEnum getRole();
+    List<RoleEnum> getRole();
 
     String getUsername();
 

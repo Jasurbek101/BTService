@@ -49,7 +49,7 @@ public class TechnicalServiceController {
                 .body(serviceResponseDto);
     }
 
-    @GetMapping("/get/{categoryId}")
+    @GetMapping("/get/category/{categoryId}")
     public HttpResponse<Object> getCategoryId(@PathVariable Integer categoryId){
         HttpResponse<Object> response = new HttpResponse<>(true);
 

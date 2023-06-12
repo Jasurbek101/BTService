@@ -2,29 +2,30 @@ package uz.BTService.btservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import uz.BTService.btservice.controller.convert.OrderForServiceConvert;
-import uz.BTService.btservice.controller.dto.response.OrderForServiceResponseDto;
+import uz.BTService.btservice.controller.convert.OrderForProductConvert;
+import uz.BTService.btservice.controller.dto.request.OrderForProductCreateDto;
+import uz.BTService.btservice.controller.dto.response.OrderForProductResponseDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
-import uz.BTService.btservice.controller.dto.request.OrderForServiceCreateDto;
 import uz.BTService.btservice.controller.dto.request.OrderStatusUpdateDto;
-import uz.BTService.btservice.entity.OrderTechnicalForServiceEntity;
-import uz.BTService.btservice.service.OrderTechnicalService;
+import uz.BTService.btservice.entity.OrderForProductEntity;
+import uz.BTService.btservice.service.OrderForProductService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/order-for-service")
+@RequestMapping("/api/v1/order-for-product")
 @RequiredArgsConstructor
-public class OrderTechnicalServiceController {
+public class OrderForProductController {
 
-    private final OrderTechnicalService service;
+
+    private final OrderForProductService service;
 
     @PostMapping("/add")
-    public HttpResponse<Object> addOrderForService(@RequestBody OrderForServiceCreateDto orderForServiceCreateDto) {
+    public HttpResponse<Object> addOrderForService(@RequestBody OrderForProductCreateDto orderForProductCreateDto) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
-        OrderTechnicalForServiceEntity orderTechnicalService = OrderForServiceConvert.convertToEntity(orderForServiceCreateDto);
-        boolean addOrder = service.addOrder(orderTechnicalService);
+        OrderForProductEntity orderForProduct = OrderForProductConvert.convertToEntity(orderForProductCreateDto);
+        boolean addOrder = service.addOrder(orderForProduct);
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -36,11 +37,13 @@ public class OrderTechnicalServiceController {
     public HttpResponse<Object> getOrderForService(@PathVariable Integer id) {
 
         HttpResponse<Object> response = HttpResponse.build(true);
-        OrderForServiceResponseDto orderForServiceResponseDto = OrderForServiceConvert.from(service.getOrderById(id));
+
+        OrderForProductEntity orderForProduct = service.getOrderById(id);
+        OrderForProductResponseDto orderForProductResponseDto = OrderForProductConvert.from(orderForProduct);
 
         return response
                 .code(HttpResponse.Status.OK)
-                .body(orderForServiceResponseDto)
+                .body(orderForProductResponseDto)
                 .message(HttpResponse.Status.OK.name());
     }
 
@@ -48,12 +51,12 @@ public class OrderTechnicalServiceController {
     public HttpResponse<Object> getOrderForServiceAll() {
 
         HttpResponse<Object> response = HttpResponse.build(true);
-        List<OrderTechnicalForServiceEntity> orderTechnicalForServiceEntityList = service.getAllOrderForService();
-        List<OrderForServiceResponseDto> orderTechnicalServiceEntities = OrderForServiceConvert.from(orderTechnicalForServiceEntityList);
+        List<OrderForProductEntity> orderForProductEntityList = service.getAllOrderForService();
+        List<OrderForProductResponseDto> orderForProductResponseDtoList = OrderForProductConvert.from(orderForProductEntityList);
 
         return response
                 .code(HttpResponse.Status.OK)
-                .body(orderTechnicalServiceEntities)
+                .body(orderForProductResponseDtoList)
                 .message(HttpResponse.Status.OK.name());
     }
 
@@ -68,7 +71,4 @@ public class OrderTechnicalServiceController {
                 .body(updateOrderStatus)
                 .message(HttpResponse.Status.OK.name());
     }
-
-
-
 }

@@ -31,7 +31,8 @@ public class SecurityConfiguration {
             "/api/v1/technical-service/get/**",
             "/api/v1/banner/get/**",
             "/attach/**",
-            "/api/v1/region/get/**"
+            "/api/v1/region/get/**",
+            "/images/**"
     };
 
     @Bean

@@ -1,7 +1,7 @@
 package uz.BTService.btservice.entity.role;
 
 public enum RoleEnum {
-    ADMIN,
     USER,
+    ADMIN,
     SUPER_ADMIN
 }

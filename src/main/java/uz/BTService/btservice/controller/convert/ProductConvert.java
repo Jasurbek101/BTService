@@ -35,6 +35,7 @@ public class ProductConvert {
 
         return ProductResponseForUserDto
                 .builder()
+                .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .categoryId(product.getCategoryId())

@@ -11,6 +11,7 @@ import uz.BTService.btservice.controller.dto.response.TokenResponseDto;
 import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
 import uz.BTService.btservice.controller.dto.request.UserCreateRequestDto;
+import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import uz.BTService.btservice.service.AuthenticationService;
 import uz.BTService.btservice.service.UserService;
@@ -32,13 +33,15 @@ public class AdminController {
     @Operation(summary = "This method for get", description = "To get all users for admin")
     @GetMapping("/list")
     public HttpResponse<Object> getAdminList() {
-        HttpResponse<Object> response = HttpResponse.build(false);
+        HttpResponse<Object> response = HttpResponse.build(true);
 
-            List<UserDto> adminList = userService.getAdminAll();
-            if (adminList == null || adminList.isEmpty())
-                response.code(HttpResponse.Status.NOT_FOUND).message("Not found any user!!!");
-            else
-                response.code(HttpResponse.Status.OK).success(true).body(adminList).message(HttpResponse.Status.OK.name());
+        List<UserEntity> adminList = userService.getAdminAll();
+        List<UserDto> userDtoList = UserConvert.fromEntity(adminList);
+
+        response
+                .code(HttpResponse.Status.OK)
+                .body(userDtoList)
+                .message(HttpResponse.Status.OK.name());
 
         return response;
     }
@@ -50,8 +53,9 @@ public class AdminController {
     public HttpResponse<Object> add(@RequestBody UserCreateRequestDto requestDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
-            requestDto.setRoleEnum(RoleEnum.ADMIN);
-            TokenResponseDto register = service.register(UserConvert.convertToEntity(requestDto));
+            UserEntity user = UserConvert.convertToEntity(requestDto);
+            TokenResponseDto register = service.register(user);
+
             response
                     .code(HttpResponse.Status.OK)
                     .success(true)
@@ -69,14 +73,14 @@ public class AdminController {
     @Operation(summary = "This method for get", description = "This method is used to get how many points the admin user has scored")
     @GetMapping("/info/{id}")
     public HttpResponse<Object> getAdminInformation(@PathVariable Integer id) {
-        HttpResponse<Object> response = HttpResponse.build(false);
+        HttpResponse<Object> response = HttpResponse.build(true);
 
-            UserDto user = UserConvert.from(userService.getAdminInformation(id));
+        UserDto user = UserConvert.from(userService.getAdminInformation(id));
 
-            response
-                    .code(HttpResponse.Status.OK)
-                    .success(true).body(user)
-                    .message(HttpResponse.Status.OK.name());
+        response
+                .code(HttpResponse.Status.OK)
+                .body(user)
+                .message(HttpResponse.Status.OK.name());
 
         return response;
     }
@@ -87,10 +91,13 @@ public class AdminController {
     @DeleteMapping("/delete/{id}")
     public HttpResponse<Object> userDelete(@PathVariable Integer id) {
 
-        HttpResponse<Object> response = new HttpResponse<>(false);
+        HttpResponse<Object> response = new HttpResponse<>(true);
         Boolean userDelete = userService.userDelete(id);
 
-                return response.code(HttpResponse.Status.OK).success(true).body(userDelete).message(id + "-id admin deleted successfully");
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(userDelete)
+                .message(id + "-id admin deleted successfully");
 
     }
 

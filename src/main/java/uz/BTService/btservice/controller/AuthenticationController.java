@@ -30,7 +30,7 @@ public class AuthenticationController {
     public HttpResponse<Object> register(@RequestBody UserCreateRequestDto userDto) {
 
         HttpResponse<Object> response = HttpResponse.build(false);
-        userDto.setRoleEnum(RoleEnum.USER);
+
         TokenResponseDto register = service.register(UserConvert.convertToEntity(userDto));
 
         response

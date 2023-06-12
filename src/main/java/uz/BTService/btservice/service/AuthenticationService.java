@@ -13,8 +13,10 @@ import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import uz.BTService.btservice.exceptions.UserDataException;
 import uz.BTService.btservice.exceptions.AuthenticationException;
+import uz.BTService.btservice.exceptions.UserUnauthorizedAction;
 import uz.BTService.btservice.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -71,19 +73,32 @@ public class AuthenticationService {
     }
 
     private void userForCreate(UserEntity user) {
-        if (SecurityUtils.getUsername() != null) {
-            var userEntity = SecurityUtils.getUser();
-            assert userEntity != null;
-            if (userEntity.getRoleEnum() == RoleEnum.SUPER_ADMIN) {
+        var userEntity = SecurityUtils.getUser();
+        if (userEntity != null) {
+
+            if (userRoleAdminVerify(userEntity.getRoleEnumList())) {
                 user.forCreate(userEntity.getId());
+            }else{
+                throw new UserUnauthorizedAction(userEntity.getId() + " User Unauthorized action!!!");
             }
-        } else user.forCreate();
+
+        } else
+            user.forCreate();
+    }
+
+    private boolean userRoleAdminVerify(List<RoleEnum> roleEnumList){
+        for(RoleEnum e: roleEnumList){
+            if(e == RoleEnum.SUPER_ADMIN)
+                return true;
+        }
+        return false;
     }
 
     private UserEntity verifyUser(LoginRequestDto request) {
         UserEntity user = repository.findByUsername(request.getUsername()).orElseThrow(() -> {
             throw new AuthenticationException(request.getUsername() + " username not found!");
         });
+
 
         verifyPassword(request, user.getPassword());
 

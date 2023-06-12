@@ -15,12 +15,18 @@ public class MessageEntity {
 
     private String text;
 
-    @Column(name = "order_servicer_id")
+    @Column(name = "order_service_id")
     private Integer orderServiceId;
 
     @ManyToOne
-    @JoinColumn(name = "order_servicer_id", insertable = false, updatable = false)
-    private OrderTechnicalServiceEntity orderTechnicalService;
+    @JoinColumn(name = "order_service_id", insertable = false, updatable = false)
+    private OrderTechnicalForServiceEntity orderTechnicalService;
 
+    @Column(name = "order_product_id")
+    private Integer orderForProductId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_product_id", insertable = false, updatable = false)
+    private OrderForProductEntity orderForProductEntity;
 
 }
