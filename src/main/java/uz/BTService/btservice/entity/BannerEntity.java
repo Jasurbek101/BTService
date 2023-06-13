@@ -12,7 +12,7 @@ import uz.BTService.btservice.constants.TableNames;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = TableNames.BTS_BANNER)
+@Table(name = TableNames.BANNER)
 public class BannerEntity {
 
 

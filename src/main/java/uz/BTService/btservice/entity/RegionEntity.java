@@ -1,16 +1,13 @@
 package uz.BTService.btservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.RegionDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter

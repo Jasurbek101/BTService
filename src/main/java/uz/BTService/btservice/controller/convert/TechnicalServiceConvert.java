@@ -17,7 +17,6 @@ public class TechnicalServiceConvert {
                 .builder()
                 .attachId(technicalServiceCreate.getAttachId())
                 .description(technicalServiceCreate.getDescription())
-                .categoryId(technicalServiceCreate.getCategoryId())
                 .build();
     }
 

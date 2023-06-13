@@ -3,10 +3,12 @@ package uz.BTService.btservice.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import uz.BTService.btservice.constants.TableNames;
 
 @Getter
 @Setter
 @Entity
+@Table(name = TableNames.MESSAGE)
 public class MessageEntity {
 
     @Id

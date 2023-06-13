@@ -25,14 +25,10 @@ public class TechnicalServiceEntity extends BaseServerModifierEntity {
     private String attachId;
 
     @ManyToOne
-    @JoinColumn(name = "attach_id", insertable = false, updatable = false)
+    @JoinColumn(name = "attach_id", insertable=false, updatable=false)
     private AttachEntity attach;
 
-    @Column(name = "category_id")
-    private Integer categoryId;
-
     @ManyToOne
-    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CategoryEntity category;
 

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.ProductConvert;
+import uz.BTService.btservice.controller.dto.dtoUtil.FilterForm;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
 import uz.BTService.btservice.controller.dto.request.ProductCreateRequestDto;
 import uz.BTService.btservice.controller.dto.response.ProductResponseForAdminDto;
@@ -28,12 +29,12 @@ public class ProductControllerForAdmin {
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     @Operation(summary = "This method for post", description = "This method Product add")
     @PostMapping("/add")
-    public HttpResponse<Object> addProduct(@RequestBody ProductCreateRequestDto productDto, HttpServletResponse responses) {
+    public HttpResponse<Object> addProduct(@RequestBody ProductCreateRequestDto productDto) {
 
         HttpResponse<Object> response = HttpResponse.build(false);
 
         ProductEntity product = ProductConvert.convertToEntity(productDto);
-        boolean isSave = productService.addProduct(product, responses);
+        boolean isSave = productService.addProduct(product,productDto.getCategoryId());
 
         return response
                 .code(HttpResponse.Status.OK)
@@ -88,6 +89,25 @@ public class ProductControllerForAdmin {
         HttpResponse<Object> response = HttpResponse.build(false);
 
         List<ProductEntity> responseEntityList = productService.getByCategoryId(id);
+        List<ProductResponseForAdminDto> productResponseForAdminDtoList = ProductConvert.fromForAdmin(responseEntityList);
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .success(true)
+                .body(productResponseForAdminDtoList)
+                .message(HttpResponse.Status.OK.name());
+
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @Operation(summary = "This method for get", description = "Products deleted during the period")
+    @PostMapping("/for-admin/deleted-product")
+    public HttpResponse<Object> getProductByCategoryIdForAdmin(@RequestBody FilterForm filter) {
+
+        HttpResponse<Object> response = HttpResponse.build(false);
+
+        List<ProductEntity> responseEntityList = productService.getDeletedProductsByDate(filter);
         List<ProductResponseForAdminDto> productResponseForAdminDtoList = ProductConvert.fromForAdmin(responseEntityList);
 
         return response

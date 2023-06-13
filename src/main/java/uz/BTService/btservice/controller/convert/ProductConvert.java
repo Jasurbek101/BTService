@@ -7,6 +7,7 @@ import uz.BTService.btservice.controller.dto.request.ProductCreateRequestDto;
 import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
 import uz.BTService.btservice.controller.dto.response.ProductResponseForUserDto;
 import uz.BTService.btservice.entity.AttachEntity;
+import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.entity.ProductEntity;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ public class ProductConvert {
 
     public ProductEntity convertToEntity(ProductCreateRequestDto productCreateRequest){
         ProductEntity product = productCreateRequest.toEntity("attach", "attachId", "categoryId", "category");
-        product.setCategoryId(productCreateRequest.getCategoryId());
         product.setAttach(setProductSetAttachId(productCreateRequest.getAttachId()));
         return product;
     }
@@ -38,7 +38,7 @@ public class ProductConvert {
                 .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
-                .categoryId(product.getCategoryId())
+                .categoryId(product.getCategory().getId())
                 .description(product.getDescription())
                 .color(product.getColor())
                 .attach(AttachConvert.from(product.getAttach()))

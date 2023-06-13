@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import uz.BTService.btservice.constants.EntityStatus;
 import uz.BTService.btservice.entity.ProductEntity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +47,14 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     List<ProductEntity> getProductNameListSearch(@Param("productName") String[] categoryNameList);
 
     @Modifying
-    @Query(value = "UPDATE bts_product SET status = 'DELETED' WHERE id = :productId", nativeQuery = true)
-    Integer productDeleted(@Param("productId") Integer productId);}
+    @Query(value = "UPDATE bts_product SET status = 'DELETED' AND updated_date = now() AND modified_by = :userId WHERE id = :productId", nativeQuery = true)
+    Integer productDeleted(@Param("productId") Integer productId, @Param("userId")Integer userId);
+
+
+    @Query(value = "SELECT btsp.* FROM bts_product btsp " +
+            "WHERE btsp.status = 'DELETED'" +
+            " AND btsp.updated_date BETWEEN " +
+            "COALESCE(:startDate, CAST('1970-01-01 00:00:00' AS TIMESTAMP WITHOUT TIME ZONE)) " +
+            "AND COALESCE(:endDate, NOW())",nativeQuery = true)
+    List<ProductEntity> getDeletedProductByDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+}

@@ -21,11 +21,8 @@ public class ProductEntity extends BaseServerModifierEntity {
 
     private String color;
 
-    @Column(name = "category_id")
-    private Integer categoryId;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CategoryEntity category;
 

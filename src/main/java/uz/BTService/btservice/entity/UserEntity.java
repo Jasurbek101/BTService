@@ -1,5 +1,6 @@
 package uz.BTService.btservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
@@ -35,6 +36,10 @@ public class UserEntity extends BaseServerModifierEntity implements UserDetails 
     @Column(unique = true, nullable = false)
     private String username;
     private String password;
+
+    @ManyToOne
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private RegionEntity region;
 
     @Enumerated(EnumType.STRING)
     private List<RoleEnum> roleEnumList;

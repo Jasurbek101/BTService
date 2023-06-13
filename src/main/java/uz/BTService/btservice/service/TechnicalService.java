@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.BTService.btservice.common.util.SecurityUtils;
 import uz.BTService.btservice.entity.TechnicalServiceEntity;
+import uz.BTService.btservice.exceptions.CategoryNotFoundException;
+import uz.BTService.btservice.repository.CategoryRepository;
 import uz.BTService.btservice.repository.TechnicalServiceRepository;
 
 import java.util.List;
@@ -16,7 +18,12 @@ public class TechnicalService {
 
     private final TechnicalServiceRepository repository;
 
-    public boolean add(TechnicalServiceEntity entity){
+    private final CategoryRepository categoryRepository;
+
+    public boolean add(TechnicalServiceEntity entity, Integer categoryId){
+        categoryRepository.findByCategoryId(categoryId).orElseThrow(()->{
+            throw new CategoryNotFoundException(categoryId+"-id category not found");
+        });
         entity.forCreate(SecurityUtils.getUserId());
         repository.save(entity);
         return true;
