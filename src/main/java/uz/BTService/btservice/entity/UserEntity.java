@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import uz.BTService.btservice.constants.TableNames;
 import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.entity.base.BaseServerModifierEntity;
-import uz.BTService.btservice.entity.role.PermissionEnum;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +30,12 @@ public class UserEntity extends BaseServerModifierEntity implements UserDetails 
     private String lastname;
     private String middleName;
     private Date birtDate;
+
+    private String imageId;
+
+    @OneToOne
+    private AttachEntity attach;
+
     @Column(unique = true, nullable = false)
     private String phoneNumber;
     @Column(unique = true, nullable = false)

@@ -2,6 +2,8 @@ package uz.BTService.btservice.controller.dto;
 
 import lombok.*;
 import uz.BTService.btservice.controller.dto.base.BaseServerModifierDto;
+import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
+import uz.BTService.btservice.controller.dto.response.AttachUrlResponse;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 
@@ -28,6 +30,10 @@ public class UserDto extends BaseServerModifierDto {
     private String password;
 
     private String address;
+
+    private String attachId;
+
+    private AttachUrlResponse attach;
 
     private List<RoleEnum> roleEnumList;
     public UserEntity toEntity( String... ignoreProperties) {

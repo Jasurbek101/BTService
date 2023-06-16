@@ -3,6 +3,7 @@ package uz.BTService.btservice.controller.convert;
 import lombok.experimental.UtilityClass;
 import uz.BTService.btservice.controller.dto.CategoryDto;
 import uz.BTService.btservice.controller.dto.response.AttachResponseDto;
+import uz.BTService.btservice.controller.dto.response.AttachUrlResponse;
 import uz.BTService.btservice.entity.AttachEntity;
 import uz.BTService.btservice.entity.CategoryEntity;
 import uz.BTService.btservice.exceptions.OriginalFileNameNullException;
@@ -75,5 +76,14 @@ public class AttachConvert {
         }
         int lastIndex = fileName.lastIndexOf(".");
         return fileName.substring(lastIndex + 1);
+    }
+
+    public static AttachUrlResponse convertToAttachUrlDto(String attachId, String path, String type) {
+
+        AttachUrlResponse url = new AttachUrlResponse();
+        url.setId(attachId);
+        url.setUrl(ATTACH_PATH + path + "/" + attachId + "." + type);
+
+        return url;
     }
 }

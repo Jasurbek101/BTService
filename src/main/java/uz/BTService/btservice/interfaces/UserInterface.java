@@ -1,10 +1,9 @@
 package uz.BTService.btservice.interfaces;
 
 import uz.BTService.btservice.constants.EntityStatus;
-import uz.BTService.btservice.entity.role.RoleEnum;
 
+import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 public interface UserInterface {
     Integer getId();
@@ -13,13 +12,13 @@ public interface UserInterface {
 
     Integer getCreated_by();
 
-    Date getCreated_date();
+    LocalDateTime getCreated_date();
 
     Integer getModified_by();
 
-    Date getUpdated_date();
+    LocalDateTime getUpdated_date();
 
-    Date getBirth_date();
+    Date getBirt_date();
 
     String getFirstname();
 
@@ -38,5 +37,12 @@ public interface UserInterface {
     Integer getRegion_id();
 
     String getAddress();
+
+    String getAttach_id();
+
+    String getPath();
+
+    String getType();
+
 
 }

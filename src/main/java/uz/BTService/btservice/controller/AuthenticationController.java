@@ -12,8 +12,6 @@ import uz.BTService.btservice.controller.dto.request.LoginRequestDto;
 import uz.BTService.btservice.controller.dto.response.TokenResponseDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
 import uz.BTService.btservice.controller.dto.request.UserCreateRequestDto;
-import uz.BTService.btservice.entity.UserEntity;
-import uz.BTService.btservice.entity.role.RoleEnum;
 import uz.BTService.btservice.service.AuthenticationService;
 
 @RestController
@@ -46,11 +44,11 @@ public class AuthenticationController {
     @PostMapping("/login")
     public HttpResponse<Object> authenticate(@RequestBody LoginRequestDto request) {
         HttpResponse<Object> response = HttpResponse.build(true);
-
+        TokenResponseDto authenticate = service.authenticate(request);
         response
                 .success(true)
                 .code(HttpResponse.Status.OK)
-                .body(service.authenticate(request))
+                .body(authenticate)
                 .message("successfully!!!");
 
         return response;

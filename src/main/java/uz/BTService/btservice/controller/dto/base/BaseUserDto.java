@@ -16,6 +16,7 @@ public class BaseUserDto {
 
     private String middleName;
 
+
     public <DTO extends BaseUserDto, ENTITY extends BaseServerModifierEntity> ENTITY toEntity(DTO dto, ENTITY entity, String... ignoreProperties){
         BeanUtils.copyProperties(dto, entity, ignoreProperties);
         return entity;

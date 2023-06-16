@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String uploadedImagesPath = "file:C:/MY_PROJECTS/spring-boot-project/BTService/src/main/resources/images/";
+        String uploadedImagesPath = "file:src/main/resources/images/";
         registry.addResourceHandler("/images/**")
                 .addResourceLocations(uploadedImagesPath)
                 .setCacheControl(CacheControl.noCache());

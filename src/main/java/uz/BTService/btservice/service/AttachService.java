@@ -33,8 +33,6 @@ public class AttachService {
     @Value("${attach.upload.folder}")
     private String attachUploadFolder;
 
-    @Value("${attach.download.url}")
-    private String attachDownloadUrl;
 
     private final AttachRepository repository;
 
@@ -45,19 +43,6 @@ public class AttachService {
         fileSaveToSystem(file, attachEntity.getPath(), attachEntity.getId(), attachEntity.getType());
 
         return repository.save(attachEntity);
-
-    }
-
-    public byte[] open(String fileName) {
-        try {
-            AttachEntity entity = getAttach(fileName);
-
-            Path file = Paths.get(attachUploadFolder + entity.getPath() + "/" + fileName);
-            return Files.readAllBytes(file);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
     }
 

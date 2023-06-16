@@ -6,6 +6,7 @@ import uz.BTService.btservice.common.util.DateUtil;
 import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.controller.dto.request.AdminCreateRequestDto;
 import uz.BTService.btservice.controller.dto.request.UserCreateRequestDto;
+import uz.BTService.btservice.controller.dto.response.AttachUrlResponse;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
 import uz.BTService.btservice.exceptions.UserDataException;
@@ -21,6 +22,7 @@ public class UserConvert {
     public UserEntity convertToEntity(UserCreateRequestDto userCreateRequestDto) {
         return userIgnorePropertiesAdd(
                 userCreateRequestDto.toEntity("role", "birtDate"),
+                userCreateRequestDto.getAttachId(),
                 userCreateRequestDto.getBirtDate(),
                 null);
     }
@@ -28,6 +30,7 @@ public class UserConvert {
     public UserEntity convertToEntity(AdminCreateRequestDto userCreateRequestDto) {
         return userIgnorePropertiesAdd(
                 userCreateRequestDto.toEntity("role", "birtDate"),
+                userCreateRequestDto.getAttachId(),
                 userCreateRequestDto.getBirtDate(),
                 userCreateRequestDto.getRoles());
     }
@@ -35,6 +38,7 @@ public class UserConvert {
     public UserEntity convertToEntity(UserDto userDto) {
         return userIgnorePropertiesAdd(
                 userDto.toEntity("role", "birtDate"),
+                userDto.getAttachId(),
                 userDto.getBirtDate(),
                 userDto.getRoleEnumList());
     }
@@ -56,17 +60,16 @@ public class UserConvert {
         dto.setLastname(userInterface.getLastname());
         dto.setMiddleName(userInterface.getMiddle_name());
         dto.setCreatedBy(userInterface.getCreated_by());
-//        dto.setUpdatedDate(userInterface.getUpdated_date());
-        dto.setBirtDate(DateUtil.format(userInterface.getBirth_date(), DateUtil.PATTERN3));
+        dto.setUpdatedDate(userInterface.getUpdated_date());
+        dto.setCreatedDate(userInterface.getCreated_date());
+        dto.setModifiedBy(userInterface.getModified_by());
+        dto.setBirtDate(DateUtil.format(userInterface.getBirt_date(), DateUtil.PATTERN3));
         dto.setPhoneNumber(userInterface.getPhone_number());
         dto.setUsername(userInterface.getUsername());
-        String roleEnumList = userInterface.getRole_enum_list();
-        String[] split = roleEnumList.split(",");
-        List<RoleEnum> roleEnums = new ArrayList<>();
-        for (String s : split) {
-            roleEnums.add(RoleEnum.valueOf(s));
-        }
-        dto.setRoleEnumList(roleEnums);
+
+        dto.setRoleEnumList(stringToRoleList(userInterface.getRole_enum_list()));
+        attachIdVerifyAndSet(userInterface.getAttach_id(), userInterface.getPath(), userInterface.getType(), dto);
+
         dto.setStatus(userInterface.getStatus());
         dto.setAddress(userInterface.getAddress());
         return dto;
@@ -76,10 +79,11 @@ public class UserConvert {
         return userInterfaceList.stream().map(UserConvert::from).toList();
     }
 
-    private UserEntity userIgnorePropertiesAdd(UserEntity user, String birtDate, List<RoleEnum> role) {
+    private UserEntity userIgnorePropertiesAdd(UserEntity user, String attachId, String birtDate, List<RoleEnum> role) {
 
         try {
             user.setBirtDate(DateUtils.parseDate(birtDate, DateUtil.PATTERN3));
+            user.setImageId(attachId);
             user.setRoleEnumList(setRoleEnum(role));
 
         } catch (ParseException e) {
@@ -93,4 +97,23 @@ public class UserConvert {
         return roleEnums == null ? List.of(RoleEnum.USER) : roleEnums;
     }
 
+    private List<RoleEnum> stringToRoleList(String roles) {
+        String[] split = roles.split(",");
+        List<RoleEnum> roleEnums = new ArrayList<>();
+        for (String s : split) {
+            roleEnums.add(RoleEnum.valueOf(s));
+        }
+        return roleEnums;
+    }
+
+    private void attachIdVerifyAndSet(String attachId, String path, String type, UserDto dto) {
+        if (attachId != null) {
+            AttachUrlResponse attachUrlResponse = AttachConvert.convertToAttachUrlDto(
+                    attachId,
+                    path,
+                    type
+            );
+            dto.setAttach(attachUrlResponse);
+        }
+    }
 }

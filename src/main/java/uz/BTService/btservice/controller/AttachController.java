@@ -41,11 +41,11 @@ public class AttachController {
     }
 
 
-    @Operation(summary = "This method for get", description = "This method Attach get url")
-    @GetMapping(value = "/public/open/{fileName}", produces = MediaType.ALL_VALUE)
-    public byte[] open(@PathVariable("fileName") String fileName) {
-        return service.open(fileName);
-    }
+//    @Operation(summary = "This method for get", description = "This method Attach get url")
+//    @GetMapping(value = "/public/open/{fileName}", produces = MediaType.ALL_VALUE)
+//    public byte[] open(@PathVariable("fileName") String fileName) {
+//        return service.open(fileName);
+//    }
 
     @Operation(summary = "This method for get", description = "This method Attach get attach name")
     @GetMapping("/download/{fineName}")

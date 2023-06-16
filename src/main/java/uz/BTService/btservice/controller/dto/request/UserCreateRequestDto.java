@@ -33,6 +33,7 @@ public class UserCreateRequestDto extends BaseUserDto {
     @NotBlank(message = "region id must not be null!!!")
     private Integer regionId;
 
+    private String attachId;
 
     public UserEntity toEntity(String... ignoreProperties) {
         return super.toEntity(this, new UserEntity(), ignoreProperties);
