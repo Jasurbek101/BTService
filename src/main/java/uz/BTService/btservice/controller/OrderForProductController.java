@@ -1,6 +1,9 @@
 package uz.BTService.btservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.OrderForProductConvert;
 import uz.BTService.btservice.controller.dto.request.OrderForProductCreateDto;
@@ -20,6 +23,8 @@ public class OrderForProductController {
 
     private final OrderForProductService service;
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("permitAll()")
     @PostMapping("/add")
     public HttpResponse<Object> addOrderForService(@RequestBody OrderForProductCreateDto orderForProductCreateDto) {
 
@@ -33,6 +38,9 @@ public class OrderForProductController {
                 .message(HttpResponse.Status.OK.name());
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
+    @Operation(summary = "This method for get ID", description = "This method get by id")
     @GetMapping("/get/{id}")
     public HttpResponse<Object> getOrderForService(@PathVariable Integer id) {
 
@@ -47,6 +55,9 @@ public class OrderForProductController {
                 .message(HttpResponse.Status.OK.name());
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
+    @Operation(summary = "This method for get", description = "This method get")
     @GetMapping("/get/all")
     public HttpResponse<Object> getOrderForServiceAll() {
 
@@ -60,6 +71,9 @@ public class OrderForProductController {
                 .message(HttpResponse.Status.OK.name());
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
+    @Operation(summary = "This method for put", description = "This method update order status")
     @PutMapping("/update/status/{id}")
     public HttpResponse<Object> updateOrderStatus(@RequestBody OrderStatusUpdateDto orderStatusUpdateDto, @PathVariable Integer id) {
 

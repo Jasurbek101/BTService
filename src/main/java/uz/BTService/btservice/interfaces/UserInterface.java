@@ -31,19 +31,12 @@ public interface UserInterface {
 
     String getPhone_number();
 
-    List<RoleEnum> getRole();
+    String getRole_enum_list();
 
     String getUsername();
 
-    Integer getImage_id();
-
-    Integer getNeighborhood_id();
-
     Integer getRegion_id();
 
-    Integer getParent_region_id();
+    String getAddress();
 
-    String getRegion_name();
-
-    String getParent_region_name();
 }

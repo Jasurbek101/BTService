@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
-@Tag(name = "Product", description = "This Product CRUD")
+@Tag(name = "Product Controller", description = "This Product Controller for super admin")
 public class ProductController extends BaseServerModifierEntity {
 
     private final ProductService productService;
@@ -62,10 +62,7 @@ public class ProductController extends BaseServerModifierEntity {
                     .body(responseForUserDtoList)
                     .message(HttpResponse.Status.OK.name());
 
-
-        return response;
-    }
-
+            return response;}
 
     @Operation(summary = "This method for get", description = "Product get category by id")
     @GetMapping("/get/category/{id}")
@@ -80,9 +77,7 @@ public class ProductController extends BaseServerModifierEntity {
                     .code(HttpResponse.Status.OK)
                     .success(true)
                     .body(responseForUserDtoList)
-                    .message(HttpResponse.Status.OK.name());
-
-    }
+                    .message(HttpResponse.Status.OK.name());}
 
 
 
@@ -100,8 +95,4 @@ public class ProductController extends BaseServerModifierEntity {
                     .body(responseProductList)
                     .message(HttpResponse.Status.OK.name());
 
-    }
-
-}
-
-
+    }}

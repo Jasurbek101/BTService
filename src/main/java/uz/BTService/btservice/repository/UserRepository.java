@@ -24,29 +24,30 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     Optional<UserEntity> findByUsernameOriginalDB(@Param("username") String username,@Param("phoneNumber") String phoneNumber);
 
 
-    @Query(value = "SELECT * FROM bts_user WHERE status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
-    List<UserEntity> getAllUser();
-
-
-//    @Query(value =  "WITH regions AS(\n" +
-//                    "    SELECT dr1.id as id,\n" +
-//                    "           dr2.id as parent_id,\n" +
-//                    "           dr1.name as name,\n" +
-//                    "           dr2.name as parent_name\n" +
-//                    "    FROM d_region dr1\n" +
-//                    "    LEFT JOIN d_region dr2 ON dr1.parent_id = dr2.id\n" +
-//                    "    WHERE dr1.parent_id IS NOT NULL\n" +
-//                    ")\n" +
-//                    "SELECT du.*,\n" +
-//                    "       r.parent_id as parent_region_id,\n" +
-//                    "       r.name as region_name,\n" +
-//                    "       r.parent_name as parent_region_name\n" +
-//                    "FROM bts_user du\n" +
-//                    "LEFT JOIN regions r ON du.region_id = ANY(ARRAY[r.id, r.parent_id])\n" +
-//                    "where du.status <> 'DELETED';", nativeQuery = true)
-//    List<UserInterface> getAllUserInterface();
-
-    @Query(value = "SELECT * FROM bts_user WHERE status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)
+    @Query(value =  "SELECT btsu.*,(\n" +
+            "SELECT STRING_AGG(name, ', ')\n" +
+            "    AS address FROM (\n" +
+            "      WITH RECURSIVE regon_name AS(\n" +
+            "         SELECT\n" +
+            "             bts_child.name AS name,\n" +
+            "             bts_child.id,\n" +
+            "             bts_child.parent_id,\n" +
+            "             0 as level\n" +
+            "         FROM bts_region bts_child\n" +
+            "                      WHERE bts_child.id = btsu.region_id\n" +
+            "                      UNION ALL\n" +
+            "         SELECT\n" +
+            "             btsr_parent.name AS name,\n" +
+            "             btsr_parent.id,\n" +
+            "             btsr_parent.parent_id,\n" +
+            "             level+1\n" +
+            "         FROM bts_region btsr_parent\n" +
+            "                        INNER JOIN regon_name rn on rn.parent_id = btsr_parent.id\n" +
+            "                              )\n" +
+            "      SELECT regon_name.name FROM regon_name\n" +
+            "                        ORDER BY regon_name.level DESC )\n" +
+            "        AS user_address)\n" +
+            "FROM bts_user btsu WHERE btsu.status<>'DELETED'", nativeQuery = true)
     List<UserInterface> getAllUserInterface();
 
     @Query(value = "SELECT * FROM bts_user WHERE id = :userInformationId AND status <> 'DELETED' AND role_enum <> 'SUPER_ADMIN'", nativeQuery = true)

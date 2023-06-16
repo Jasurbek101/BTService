@@ -26,7 +26,7 @@ public class ProductControllerForAdmin {
     private final ProductService productService;
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
     @Operation(summary = "This method for post", description = "This method Product add")
     @PostMapping("/add")
     public HttpResponse<Object> addProduct(@RequestBody ProductCreateRequestDto productDto) {
@@ -45,7 +45,7 @@ public class ProductControllerForAdmin {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
     @Operation(summary = "This method for GetId", description = "This method Product GetId")
     @GetMapping("/for-admin/get/{id}")
     public HttpResponse<Object> getProductIdForAdmin(@PathVariable Integer id) {
@@ -64,7 +64,7 @@ public class ProductControllerForAdmin {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
     @Operation(summary = "This method for get", description = "This method get all product")
     @GetMapping("/for-admin/get/all")
     public HttpResponse<Object> getProductAllForAdmin() {HttpResponse<Object> response = HttpResponse.build(false);
@@ -81,7 +81,7 @@ public class ProductControllerForAdmin {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
     @Operation(summary = "This method for get", description = "Product get category by id")
     @GetMapping("/for-admin/category/get/{id}")
     public HttpResponse<Object> getProductByCategoryIdForAdmin(@PathVariable Integer id) {
@@ -100,7 +100,7 @@ public class ProductControllerForAdmin {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
     @Operation(summary = "This method for get", description = "Products deleted during the period")
     @PostMapping("/for-admin/deleted-product")
     public HttpResponse<Object> getProductByCategoryIdForAdmin(@RequestBody FilterForm filter) {
@@ -119,7 +119,7 @@ public class ProductControllerForAdmin {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
     @Operation(summary = "This method for Delete", description = "This method Product delete")
     @DeleteMapping("/delete/{id}")
     public HttpResponse<Object> deleteProductId(@PathVariable Integer id) {

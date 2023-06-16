@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.time.DateUtils;
 import uz.BTService.btservice.common.util.DateUtil;
 import uz.BTService.btservice.controller.dto.UserDto;
+import uz.BTService.btservice.controller.dto.request.AdminCreateRequestDto;
 import uz.BTService.btservice.controller.dto.request.UserCreateRequestDto;
 import uz.BTService.btservice.entity.UserEntity;
 import uz.BTService.btservice.entity.role.RoleEnum;
@@ -21,7 +22,14 @@ public class UserConvert {
         return userIgnorePropertiesAdd(
                 userCreateRequestDto.toEntity("role", "birtDate"),
                 userCreateRequestDto.getBirtDate(),
-                userCreateRequestDto.getRoleEnumList());
+                null);
+    }
+
+    public UserEntity convertToEntity(AdminCreateRequestDto userCreateRequestDto) {
+        return userIgnorePropertiesAdd(
+                userCreateRequestDto.toEntity("role", "birtDate"),
+                userCreateRequestDto.getBirtDate(),
+                userCreateRequestDto.getRoles());
     }
 
     public UserEntity convertToEntity(UserDto userDto) {
@@ -47,11 +55,20 @@ public class UserConvert {
         dto.setFirstname(userInterface.getFirstname());
         dto.setLastname(userInterface.getLastname());
         dto.setMiddleName(userInterface.getMiddle_name());
+        dto.setCreatedBy(userInterface.getCreated_by());
+//        dto.setUpdatedDate(userInterface.getUpdated_date());
         dto.setBirtDate(DateUtil.format(userInterface.getBirth_date(), DateUtil.PATTERN3));
         dto.setPhoneNumber(userInterface.getPhone_number());
         dto.setUsername(userInterface.getUsername());
-        dto.setRoleEnumList(userInterface.getRole());
+        String roleEnumList = userInterface.getRole_enum_list();
+        String[] split = roleEnumList.split(",");
+        List<RoleEnum> roleEnums = new ArrayList<>();
+        for (String s : split) {
+            roleEnums.add(RoleEnum.valueOf(s));
+        }
+        dto.setRoleEnumList(roleEnums);
         dto.setStatus(userInterface.getStatus());
+        dto.setAddress(userInterface.getAddress());
         return dto;
     }
 

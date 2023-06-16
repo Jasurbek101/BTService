@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.UserConvert;
+import uz.BTService.btservice.controller.dto.request.AdminCreateRequestDto;
 import uz.BTService.btservice.controller.dto.response.TokenResponseDto;
 import uz.BTService.btservice.controller.dto.UserDto;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
@@ -48,9 +50,9 @@ public class AdminController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    @Operation(summary = "This method for post", description = "This method user register")
+    @Operation(summary = "This method for post", description = "This method admin add")
     @PostMapping("/add")
-    public HttpResponse<Object> add(@RequestBody UserCreateRequestDto requestDto) {
+    public HttpResponse<Object> add(@RequestBody AdminCreateRequestDto requestDto) {
         HttpResponse<Object> response = HttpResponse.build(false);
         try {
             UserEntity user = UserConvert.convertToEntity(requestDto);
@@ -98,6 +100,22 @@ public class AdminController {
                 .code(HttpResponse.Status.OK)
                 .body(userDelete)
                 .message(id + "-id admin deleted successfully");
+
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "This get user roles", description = "This method get user role list")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @GetMapping("/get/roles")
+    public HttpResponse<Object> getUserRoles() {
+
+        HttpResponse<Object> response = new HttpResponse<>(true);
+        RoleEnum[] roleEnums = RoleEnum.values();
+
+        return response
+                .code(HttpResponse.Status.OK)
+                .body(roleEnums)
+                .message(HttpResponse.Status.OK.name());
 
     }
 

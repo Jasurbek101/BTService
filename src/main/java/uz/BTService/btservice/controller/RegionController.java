@@ -120,7 +120,7 @@ public class RegionController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    @Operation(summary = "This method for Put", description = "This method user update")
+    @Operation(summary = "This method for Post", description = "This method user update")
     @PostMapping("/update")
     public HttpResponse<Object> update(@RequestBody RegionDto regionDto) {
         HttpResponse<Object> response = HttpResponse.build(false);

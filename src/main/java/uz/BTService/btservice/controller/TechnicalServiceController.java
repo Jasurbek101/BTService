@@ -1,8 +1,11 @@
 package uz.BTService.btservice.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.BTService.btservice.controller.convert.TechnicalServiceConvert;
 import uz.BTService.btservice.controller.dto.dtoUtil.HttpResponse;
@@ -20,6 +23,9 @@ public class TechnicalServiceController {
 
     private final TechnicalService service;
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
+    @Operation(summary = "This method for post", description = "This method new Technical service type add")
     @PostMapping("/add")
     public HttpResponse<Object> add(@RequestBody TechnicalServiceCreate technicalServiceCreate){
 
@@ -62,6 +68,9 @@ public class TechnicalServiceController {
                 .body(serviceResponseDto);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
+    @Operation(summary = "This method for delete", description = "This method delete")
     @DeleteMapping("/deleted/{id}")
     public HttpResponse<Object> getDeletedById(@PathVariable Integer id){
         HttpResponse<Object> response = new HttpResponse<>(true);

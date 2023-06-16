@@ -16,14 +16,15 @@ import java.util.UUID;
 public class AttachConvert {
 
 
-    private static final String ATTACH_UPLOAD_FOLDER = "attaches/";
+    private static final String ATTACH_UPLOAD_FOLDER = "src/main/resources/images/";
 
-    private static final String ATTACH_DOWNLOAD_URL = "http://localhost:8080/attach/public/open/";
+    private static final String ATTACH_PATH = "http://localhost:8080/images/";
 
-    public List<AttachResponseDto> from(List<AttachEntity> categoryList){
+    public List<AttachResponseDto> from(List<AttachEntity> categoryList) {
         return categoryList.stream().map(AttachConvert::from).toList();
     }
-    public AttachResponseDto from(AttachEntity attachEntity){
+
+    public AttachResponseDto from(AttachEntity attachEntity) {
         AttachResponseDto dto = new AttachResponseDto();
         dto.setId(attachEntity.getId());
         dto.setOriginalName(attachEntity.getOriginName());
@@ -32,11 +33,11 @@ public class AttachConvert {
         dto.setType(attachEntity.getType());
         dto.setSize(attachEntity.getSize());
         dto.setCreatedData(attachEntity.getCreatedDate());
-        dto.setUrl(ATTACH_DOWNLOAD_URL + attachEntity.getId() + "." + attachEntity.getType());
+        dto.setUrl(ATTACH_PATH + attachEntity.getPath() + "/" + attachEntity.getId() + "." + attachEntity.getType());
         return dto;
     }
 
-    public AttachEntity generateAttachEntity(String fileOriginalFilename,long fileSize, String fileContentType){
+    public AttachEntity generateAttachEntity(String fileOriginalFilename, long fileSize, String fileContentType) {
         String pathFolder = getYmDString();
         File folder = new File(ATTACH_UPLOAD_FOLDER + pathFolder);
 
@@ -66,6 +67,7 @@ public class AttachConvert {
 
         return year + "/" + month + "/" + day; // 2022/04/23
     }
+
     private String getExtension(String fileName) {
         // mp3/jpg/npg/mp4.....
         if (fileName == null) {

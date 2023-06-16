@@ -30,7 +30,7 @@ public class BannerController {
     private final BannerService bannerService;
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('CONTEND_MANAGER','SUPER_ADMIN')")
     @Operation(summary = "This method for post", description = "This method Product add")
     @PostMapping("/add")
     public HttpResponse<Object> addProduct(@RequestBody BannerCreateRequestDto bannerCreateRequestDto) {

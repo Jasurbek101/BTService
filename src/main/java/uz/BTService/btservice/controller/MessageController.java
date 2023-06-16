@@ -1,6 +1,9 @@
 package uz.BTService.btservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +19,9 @@ import java.util.List;
 public class MessageController {
     private final MessageService service;
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_SERVICE','SUPER_ADMIN')")
+    @Operation(summary = "This method for get all message", description = "This method get all order service message")
     @GetMapping("/service")
     public HttpResponse<Object> getOrderForService() {
 
@@ -28,6 +34,9 @@ public class MessageController {
                 .message(HttpResponse.Status.OK.name());
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAnyRole('CALL_CENTER_FOR_PRODUCT','SUPER_ADMIN')")
+    @Operation(summary = "This method for get all order product message", description = "This method get all order product message")
     @GetMapping("/product")
     public HttpResponse<Object> getOrderForProduct() {
 
